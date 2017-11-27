@@ -83,6 +83,8 @@
     <Compile Include="GameComponent\CharacterManager.cs" />
     <Compile Include="GameComponent\SpriteBuilder.cs" />
     <Compile Include="GameComponent\GameMatch.cs" />
+    <Compile Include="GameComponent\Vision.cs" />
+    <Compile Include="GameComponent\VisionManager.cs" />
     <Compile Include="GameComponent\WinnerView.cs" />
     <Compile Include="MenuComponent\MenuView.cs" />
     <Compile Include="Model\BackgroundEntity.cs" />

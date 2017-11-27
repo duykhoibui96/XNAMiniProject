@@ -271,6 +271,24 @@
       <Output>E:\Tony\Documents\Game\Projects\MiniProject2D\MiniProject2D\MiniProject2D\bin\x86\Debug\Content\Button\reset-match_hover.xnb</Output>
       <Time>2017-11-24T16:06:33.5430531+07:00</Time>
     </Item>
+    <Item>
+      <Source>Effect\flaming.png</Source>
+      <Name>Effect\flaming</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>E:\Tony\Documents\Game\Projects\MiniProject2D\MiniProject2D\MiniProject2D\bin\x86\Debug\Content\Effect\flaming.xnb</Output>
+      <Time>2017-11-24T21:05:15.0173116+07:00</Time>
+    </Item>
+    <Item>
+      <Source>Others\vision.png</Source>
+      <Name>Others\vision</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>E:\Tony\Documents\Game\Projects\MiniProject2D\MiniProject2D\MiniProject2D\bin\x86\Debug\Content\Others\vision.xnb</Output>
+      <Time>2017-11-25T21:05:53.638258+07:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <ContentProjectGUID>{DF9FB58A-4C6B-4CB7-9BF9-8EBA2F32B550}</ContentProjectGUID>

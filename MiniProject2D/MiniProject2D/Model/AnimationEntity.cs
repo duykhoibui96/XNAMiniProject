@@ -8,11 +8,12 @@ using MiniProject2D.GameComponent;
 
 namespace MiniProject2D.Model
 {
-    class AnimationEntity: GameEntity
+    class AnimationEntity : GameEntity
     {
         private Rectangle sourceRect;
         private SpriteBuilder spriteBuilder;
         private int currentAnimationType = 0;
+        public int NumbersOfFrameType = 0;
 
         public bool AnimationMode
         {
@@ -31,13 +32,16 @@ namespace MiniProject2D.Model
 
         public int AnimationType
         {
-            set { currentAnimationType = value; }
+            set
+            {
+                currentAnimationType = value;
+            }
         }
 
-        public AnimationEntity(Texture2D sprite, Rectangle rect, Color color, int numbersOfFrames, int defaultFrameIndex)
+        public AnimationEntity(Texture2D sprite, Rectangle rect, Color color, int numbersOfFrames, int defaultFrameIndex, int numbersOfFrameType = 4)
             : base(sprite, rect, color)
         {
-            spriteBuilder = new SpriteBuilder(sprite.Width / numbersOfFrames, sprite.Height / 4, numbersOfFrames, defaultFrameIndex);
+            spriteBuilder = new SpriteBuilder(sprite.Width / numbersOfFrames, sprite.Height / numbersOfFrameType, numbersOfFrames, defaultFrameIndex);
             sourceRect = spriteBuilder.GetFrameRect();
         }
 

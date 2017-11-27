@@ -28,3 +28,5 @@ Content\Button\new-game.xnb
 Content\Button\new-game_hover.xnb
 Content\Button\reset-match.xnb
 Content\Button\reset-match_hover.xnb
+Content\Effect\flaming.xnb
+Content\Others\vision.xnb

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
@@ -27,11 +28,12 @@ namespace MiniProject2D.GameComponent
             WaitingForUser = 0, //Chờ input từ người chơi
             MonsterMovementSetting = 1, //Thiết lập trạng thái di chuyển cho quái vật
             Moving = 2,//Người chơi và quái vật trong quá trình di chuyển
-            PlayerDiscorved = 3,//Quái vật phát hiện người chơi
-            PlayerDeath = 4,//Người chơi bị giết
-            TreasureCollected = 5,//Người chơi thu thập được kho báu
-            Lose = 6,//Thua -> bị quái vật giết
-            Win = 7//Thắng -> ra được mê cung
+            FinishMoving = 3,
+            PlayerDiscorved = 4,//Quái vật phát hiện người chơi
+            PlayerDeath = 5,//Người chơi bị giết
+            TreasureCollected = 6,//Người chơi thu thập được kho báu
+            Lose = 7,//Thua -> bị quái vật giết
+            Win = 8//Thắng -> ra được mê cung
         }
 
         private Random random;
@@ -79,6 +81,7 @@ namespace MiniProject2D.GameComponent
         public GameMatch(Game game)
             : base(ViewType.Match)
         {
+            random = new Random();
             var unit = Configuration.Unit;
             visionSprite = new Texture2D(game.GraphicsDevice, 1, 1);
             visionSprite.SetData(new Color[] { Color.AntiqueWhite });
@@ -99,11 +102,10 @@ namespace MiniProject2D.GameComponent
             var unit = Configuration.Unit;
             var numbersOfObstacles = 20;
             var numbersOfZombie = 1;
-            var numbersOfScorpion = 2;
-            var numbersOfMummy = 3;
+            var numbersOfScorpion = 1;
+            var numbersOfMummy = 1;
 
             GameState = State.WaitingForUser;
-            random = new Random();
             boundary.Rect.Width = Configuration.Unit * 20;
             boundary.Rect.Height = Configuration.Unit * 10;
             config.Rect.X = boundary.Rect.X + boundary.Rect.Width + unit;
@@ -112,6 +114,7 @@ namespace MiniProject2D.GameComponent
             explosion.IsVisible = false;
             loseGame.IsVisible = false;
             endGameDelayTime = 1000;
+            movingObjIndex = 0;
 
             //Dinamic data----------------------------------------------------------------
             RandomDoors();
@@ -187,6 +190,7 @@ namespace MiniProject2D.GameComponent
             //Entrance's position must be opposite to exit's
 
             entrancePositionType = (BoundaryPositionType)random.Next(4);//Random from 0 -> 3
+            // entrancePositionType = BoundaryPositionType.Bottom;
             switch (entrancePositionType)
             {
                 case BoundaryPositionType.Top:
@@ -278,70 +282,58 @@ namespace MiniProject2D.GameComponent
             if (UserInput.Instance.IsLeftClick && config.IsHover)
                 config.LeftClick();
 
+            var currentObj = characterInfoList[movingObjIndex];
             switch (state)
             {
                 case State.WaitingForUser:
                     var pressedKey = UserInput.Instance.PressedKey;
-                    var movementState = Character.MovementState.Stand;
+                    var movementState = Vision.Direction.None;
                     switch (pressedKey)
                     {
                         case Keys.Down:
                         case Keys.S:
-                            movementState = Character.MovementState.MoveDown;
+                            movementState = Vision.Direction.Bottom;
                             break;
                         case Keys.Left:
                         case Keys.A:
-                            movementState = Character.MovementState.MoveLeft;
+                            movementState = Vision.Direction.Left;
                             break;
                         case Keys.Right:
                         case Keys.D:
-                            movementState = Character.MovementState.MoveRight;
+                            movementState = Vision.Direction.Right;
                             break;
                         case Keys.Up:
                         case Keys.W:
-                            movementState = Character.MovementState.MoveUp;
+                            movementState = Vision.Direction.Top;
                             break;
                     }
-                    if (movementState != Character.MovementState.Stand)
+                    if (movementState != Vision.Direction.None)
                     {
-                        var newRect = GetDestination(characterInfoList[movingObjIndex].Object.MovementEntity.Rect, movementState);
-                        if (newRect.Equals(Rectangle.Empty)) break;
-                        characterInfoList[movingObjIndex].ApplyNewCoords(newRect, movementState);
-                        characterInfoList[movingObjIndex].NumbersOfSteps = 1;
-                        state = State.Moving;
+                        if (currentObj.ApplyDirection(movementState))
+                            state = State.Moving;
                     }
                     break;
                 case State.MonsterMovementSetting:
-                    do
                     {
-                        var direction = GetRandomDirection(characterInfoList[movingObjIndex].Object.ObjType);
-                        var newRect = GetDestination(characterInfoList[movingObjIndex].Object.MovementEntity.Rect, direction);
-                        if (newRect.Equals(Rectangle.Empty)) continue;
-                        characterInfoList[movingObjIndex].ApplyNewCoords(newRect, direction);
-                        if (characterInfoList[movingObjIndex].NumbersOfSteps == 0)
-                            characterInfoList[movingObjIndex].NumbersOfSteps = 1;
-                        break;
+                        var direction = currentObj.GenerateDirection();
+                        if (currentObj.ApplyDirection(direction))
+                        {
+                            state = State.Moving;
+                        }
 
-                    } while (true);
-                    state = State.Moving;
+                    }
                     break;
-                case State.Moving:
-                    var currentMovingObj = characterInfoList[movingObjIndex];
-                    currentMovingObj.Move();
-                    if (currentMovingObj.FinishMoving)
+                case State.FinishMoving:
                     {
-                        if (CheckCollision())
-                        {
-                            state = State.PlayerDeath;
-                            return;
-                        }
-                        if (CheckWinner())
-                        {
-                            state = State.Win;
-                            return;
-                        }
-                        currentMovingObj.StopMoving();
-                        if (--currentMovingObj.NumbersOfSteps <= 0)
+                        var player = characterInfoList[0];
+                        if (movingObjIndex > 0)
+                            currentObj.Discover(player);
+                        else
+                            for (int i = 1; i < characterInfoList.Length; i++)
+                            {
+                                characterInfoList[i].Discover(player);
+                            }
+                        if (--currentObj.NumbersOfSteps <= 0)
                             movingObjIndex++;
                         if (movingObjIndex >= characterInfoList.Length)
                         {
@@ -353,6 +345,28 @@ namespace MiniProject2D.GameComponent
                             state = State.MonsterMovementSetting;
                         }
 
+
+
+                    }
+                    break;
+                case State.Moving:
+                    currentObj.Move();
+                    if (currentObj.FinishMoving)
+                    {
+                        if (CheckCollision())
+                        {
+                            state = State.PlayerDeath;
+                            return;
+                        }
+                        if (CheckWinner())
+                        {
+                            state = State.Win;
+                            return;
+                        }
+
+                        currentObj.StopMoving();
+                        state = State.FinishMoving;
+
                     }
                     break;
                 case State.PlayerDiscorved:
@@ -360,7 +374,7 @@ namespace MiniProject2D.GameComponent
                 case State.PlayerDeath:
                     if (!explosion.IsVisible)
                     {
-                        var explosionCoord = characterInfoList[movingObjIndex].Object.MovementEntity.Rect.Location;
+                        var explosionCoord = currentObj.Object.MovementEntity.Rect.Location;
                         explosion.Rect.Location = explosionCoord;
                         explosion.Rect.Offset(-25, -25);
                         explosion.IsVisible = true;
@@ -384,72 +398,14 @@ namespace MiniProject2D.GameComponent
             }
             foreach (var obj in characterInfoList)
             {
-                obj.Object.Update(gameTime);
+                obj.Update(gameTime, area.Rect, entrance.Rect, exit.Rect, obstacles);
             }
         }
 
-        private Character.MovementState GetRandomDirection(Character.ObjectType objType)
-        {
-            var movementState = Character.MovementState.Stand;
-
-            switch (objType)
-            {
-                case Character.ObjectType.Mummy:
-                    movementState = (Character.MovementState)random.Next(4);
-                    break;
-                case Character.ObjectType.Scorpion:
-                    movementState = (Character.MovementState)random.Next(4, 8);
-                    break;
-                case Character.ObjectType.Zombie:
-                    movementState = (Character.MovementState)random.Next(8);
-                    break;
-            }
-
-            return movementState;
-        }
-
-        private Rectangle GetDestination(Rectangle oldRect, Character.MovementState movementState)
-        {
-            var newRect = oldRect;
-            int offsetX = 0, offsetY = 0;
-            switch (movementState)
-            {
-                case Character.MovementState.MoveDown:
-                    offsetY = Configuration.Unit;
-                    break;
-                case Character.MovementState.MoveLeft:
-                    offsetX = -Configuration.Unit;
-                    break;
-                case Character.MovementState.MoveRight:
-                    offsetX = Configuration.Unit;
-                    break;
-                case Character.MovementState.MoveUp:
-                    offsetY = -Configuration.Unit;
-                    break;
-                case Character.MovementState.MoveLeftUp:
-                    offsetY = -Configuration.Unit;
-                    offsetX = -Configuration.Unit;
-                    break;
-                case Character.MovementState.MoveLeftBottom:
-                    offsetY = Configuration.Unit;
-                    offsetX = -Configuration.Unit;
-                    break;
-                case Character.MovementState.MoveRightUp:
-                    offsetY = -Configuration.Unit;
-                    offsetX = Configuration.Unit;
-                    break;
-                case Character.MovementState.MoveRightBottom:
-                    offsetY = Configuration.Unit;
-                    offsetX = Configuration.Unit;
-                    break;
-            }
-            newRect.Offset(offsetX, offsetY);
-            var valid = true;
-            valid = entrance.Rect.Contains(newRect) || exit.Rect.Contains(newRect) || area.Rect.Contains(newRect);
-            if (!valid || obstacles.Any(obj => obj.Rect.Contains(newRect)))
-                return Rectangle.Empty;
-            return newRect;
-        }
+        //private bool CheckPlayerDiscovered()
+        //{
+        //    return movingObjIndex != 0 && characterInfoList[movingObjIndex].Visions.Any(item => item.Equals(characterInfoList[0].Object.MovementEntity.Rect));
+        //}
 
         private bool CheckCollision()
         {
@@ -482,6 +438,9 @@ namespace MiniProject2D.GameComponent
             {
                 obj.Draw(spriteBatch);
             }
+            var hoverCharacter = characterInfoList.FirstOrDefault(item => item.IsHover);
+            if (hoverCharacter != null)
+                hoverCharacter.DrawVisions(spriteBatch);
             foreach (var obj in characterInfoList)
             {
                 obj.Object.Draw(spriteBatch);

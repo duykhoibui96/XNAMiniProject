@@ -21,6 +21,7 @@ namespace MiniProject2D.Resource
         public Texture2D Mummy { get; private set; }
         public Texture2D Scorpion { get; private set; }
         public Texture2D Collision { get; private set; }
+        public Texture2D Flaming { get; private set; }
         public Texture2D LoseGame { get; private set; }
         public Texture2D Config { get; private set; }
         public Texture2D ConfigHover { get; private set; }
@@ -38,6 +39,7 @@ namespace MiniProject2D.Resource
         public Texture2D ExitHover { get; private set; }
         
         public SpriteFont NotifyFont { get; private set; }
+        public Texture2D Vision { get; private set; }
 
         public void InitComponents(Game1 game)
         {
@@ -54,6 +56,7 @@ namespace MiniProject2D.Resource
             Mummy = game.Content.Load<Texture2D>("Character/mummy");
             Scorpion = game.Content.Load<Texture2D>("Character/scorpion");
             Collision = game.Content.Load<Texture2D>("Effect/collision");
+            Flaming = game.Content.Load<Texture2D>("Effect/flaming");
             LoseGame = game.Content.Load<Texture2D>("Notification/lose");
             Config = game.Content.Load<Texture2D>("Button/config");
             ConfigHover = game.Content.Load<Texture2D>("Button/config_hover");
@@ -70,6 +73,7 @@ namespace MiniProject2D.Resource
             ResetMatch = game.Content.Load<Texture2D>("Button/reset-match");
             ResetMatchHover = game.Content.Load<Texture2D>("Button/reset-match_hover");
             NotifyFont = game.Content.Load<SpriteFont>("Font/GameFont");
+            Vision = game.Content.Load<Texture2D>("Others/vision");
         }
 
         public static ResManager Instance;

@@ -34,3 +34,5 @@ E:\Tony\Documents\Game\Projects\MiniProject2D\MiniProject2D\MiniProject2D\bin\x8
 E:\Tony\Documents\Game\Projects\MiniProject2D\MiniProject2D\MiniProject2D\bin\x86\Debug\Content\Button\new-game_hover.xnb
 E:\Tony\Documents\Game\Projects\MiniProject2D\MiniProject2D\MiniProject2D\bin\x86\Debug\Content\Button\reset-match.xnb
 E:\Tony\Documents\Game\Projects\MiniProject2D\MiniProject2D\MiniProject2D\bin\x86\Debug\Content\Button\reset-match_hover.xnb
+E:\Tony\Documents\Game\Projects\MiniProject2D\MiniProject2D\MiniProject2D\bin\x86\Debug\Content\Effect\flaming.xnb
+E:\Tony\Documents\Game\Projects\MiniProject2D\MiniProject2D\MiniProject2D\bin\x86\Debug\Content\Others\vision.xnb

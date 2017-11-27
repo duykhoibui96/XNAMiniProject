@@ -20,8 +20,8 @@ namespace MiniProject2D.EventHandler
         private int mouseLeftButtonPressedX = 0;
         private int mouseLeftButtonPressedY = 0;
         private bool isLeftButtonPressed = false;
-        public bool IsLeftClick;
         public Keys PressedKey;
+        public bool IsLeftClick;
 
         public void Update()
         {

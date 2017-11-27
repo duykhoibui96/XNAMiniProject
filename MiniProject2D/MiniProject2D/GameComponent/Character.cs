@@ -7,23 +7,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniProject2D.Config;
 using MiniProject2D.Model;
+using MiniProject2D.Resource;
 
 namespace MiniProject2D.GameComponent
 {
     class Character
     {
-        public enum MovementState
-        {
-            Stand = -1,
-            MoveDown = 0,
-            MoveLeft = 1,
-            MoveRight = 2,
-            MoveUp = 3,
-            MoveLeftUp = 4,
-            MoveLeftBottom = 5,
-            MoveRightUp = 6,
-            MoveRightBottom = 7
-        }
 
         public enum ObjectType
         {
@@ -33,16 +22,17 @@ namespace MiniProject2D.GameComponent
             Zombie = 3
         }
 
-        private MovementState currentMovementState;
+        private Vision.Direction currentMovementState;
 
         private bool isHover;
-        public Rectangle[] Visions;
+        public VisionManager VisionList;
         public AnimationEntity MovementEntity;
         public AnimationEntity StateEntity;
+        public bool MaxPower;
 
         public ObjectType ObjType;
 
-        public MovementState CurrentMovementState
+        public Vision.Direction CurrentMovementState
         {
             get { return currentMovementState; }
             set
@@ -52,254 +42,37 @@ namespace MiniProject2D.GameComponent
             }
         }
 
-        public Character(AnimationEntity momentEntity, ObjectType objType)
+        public Character(AnimationEntity movementEntity, ObjectType objType)
         {
-            MovementEntity = momentEntity;
+            MovementEntity = movementEntity;
             ObjType = objType;
-            currentMovementState = MovementState.Stand;
-            switch (objType)
+            currentMovementState = Vision.Direction.None;
+            var stateRect = movementEntity.Rect;
+            stateRect.Width += 20;
+            stateRect.Height += 20;
+            StateEntity = new AnimationEntity(ResManager.Instance.Flaming, stateRect, Color.White, 5, 0, 3)
             {
-                case ObjectType.Mummy:
-                    Visions = new Rectangle[]
-                    {
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y - Configuration.Unit,
-                        Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y - Configuration.Unit * 2,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y - Configuration.Unit * 3,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y - Configuration.Unit * 4,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y + Configuration.Unit,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y + Configuration.Unit * 2,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y + Configuration.Unit * 3,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y + Configuration.Unit * 4,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit * 2, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit * 3, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit * 4, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit * 2, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit * 3, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit * 4, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                    };
-
-                    break;
-                case ObjectType.Scorpion:
-                    Visions = new Rectangle[]
-                    {
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit,
-                            MovementEntity.Rect.Y - Configuration.Unit,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit*2,
-                            MovementEntity.Rect.Y - Configuration.Unit*2,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit*3,
-                            MovementEntity.Rect.Y - Configuration.Unit*3,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit*4,
-                            MovementEntity.Rect.Y - Configuration.Unit*4,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit,
-                            MovementEntity.Rect.Y + Configuration.Unit,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit*2,
-                            MovementEntity.Rect.Y + Configuration.Unit*2,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit*3,
-                            MovementEntity.Rect.Y + Configuration.Unit*3,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit*4,
-                            MovementEntity.Rect.Y + Configuration.Unit*4,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit,
-                            MovementEntity.Rect.Y + Configuration.Unit,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit*2,
-                            MovementEntity.Rect.Y + Configuration.Unit*2,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit*3,
-                            MovementEntity.Rect.Y + Configuration.Unit*3,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit*4,
-                            MovementEntity.Rect.Y + Configuration.Unit*4,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit,
-                            MovementEntity.Rect.Y - Configuration.Unit,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit*2,
-                            MovementEntity.Rect.Y - Configuration.Unit*2,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit*3,
-                            MovementEntity.Rect.Y - Configuration.Unit*3,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit*4,
-                            MovementEntity.Rect.Y - Configuration.Unit*4,
-                            Configuration.Unit, Configuration.Unit),
-
-                    };
-
-                    break;
-                case ObjectType.Zombie:
-
-                    Visions = new Rectangle[]
-                    {
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y - Configuration.Unit,
-                        Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y - Configuration.Unit * 2,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y - Configuration.Unit * 3,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y - Configuration.Unit * 4,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y + Configuration.Unit,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y + Configuration.Unit * 2,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y + Configuration.Unit * 3,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X, MovementEntity.Rect.Y + Configuration.Unit * 4,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit * 2, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit * 3, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit * 4, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit * 2, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit * 3, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit * 4, MovementEntity.Rect.Y,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit,
-                            MovementEntity.Rect.Y - Configuration.Unit,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit*2,
-                            MovementEntity.Rect.Y - Configuration.Unit*2,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit*3,
-                            MovementEntity.Rect.Y - Configuration.Unit*3,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit*4,
-                            MovementEntity.Rect.Y - Configuration.Unit*4,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit,
-                            MovementEntity.Rect.Y + Configuration.Unit,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit*2,
-                            MovementEntity.Rect.Y + Configuration.Unit*2,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit*3,
-                            MovementEntity.Rect.Y + Configuration.Unit*3,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit*4,
-                            MovementEntity.Rect.Y + Configuration.Unit*4,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit,
-                            MovementEntity.Rect.Y + Configuration.Unit,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit*2,
-                            MovementEntity.Rect.Y + Configuration.Unit*2,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit*3,
-                            MovementEntity.Rect.Y + Configuration.Unit*3,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X - Configuration.Unit*4,
-                            MovementEntity.Rect.Y + Configuration.Unit*4,
-                            Configuration.Unit, Configuration.Unit),
-
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit,
-                            MovementEntity.Rect.Y - Configuration.Unit,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit*2,
-                            MovementEntity.Rect.Y - Configuration.Unit*2,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit*3,
-                            MovementEntity.Rect.Y - Configuration.Unit*3,
-                            Configuration.Unit, Configuration.Unit),
-                        new Rectangle(MovementEntity.Rect.X + Configuration.Unit*4,
-                            MovementEntity.Rect.Y - Configuration.Unit*4,
-                            Configuration.Unit, Configuration.Unit),
-
-                    };
-                    break;
-            }
+                AnimationMode = true
+            };
+            VisionList = new VisionManager(MovementEntity.Rect,objType);
         }
 
         public void Update(GameTime gameTime)
         {
             MovementEntity.Update(gameTime);
-            if (Visions == null) return;
-            for (int index = 0; index < Visions.Length; index++)
-            {
-                int offsetX = 0, offsetY = 0;
-                switch (currentMovementState)
-                {
-                    case Character.MovementState.MoveDown:
-                        offsetY = Configuration.Velocity;
-                        break;
-                    case Character.MovementState.MoveLeft:
-                        offsetX = -Configuration.Velocity;
-                        break;
-                    case Character.MovementState.MoveRight:
-                        offsetX = Configuration.Velocity;
-                        break;
-                    case Character.MovementState.MoveUp:
-                        offsetY = -Configuration.Velocity;
-                        break;
-                    case Character.MovementState.MoveLeftUp:
-                        offsetY = -Configuration.Velocity;
-                        offsetX = -Configuration.Velocity;
-                        break;
-                    case Character.MovementState.MoveLeftBottom:
-                        offsetY = Configuration.Velocity;
-                        offsetX = -Configuration.Velocity;
-                        break;
-                    case Character.MovementState.MoveRightUp:
-                        offsetY = -Configuration.Velocity;
-                        offsetX = Configuration.Velocity;
-                        break;
-                    case Character.MovementState.MoveRightBottom:
-                        offsetY = Configuration.Velocity;
-                        offsetX = Configuration.Velocity;
-                        break;
-                }
-                Visions[index].Offset(offsetX, offsetY);
-            }
+            VisionList.Update(MovementEntity.Rect);
+            if (!MaxPower) return;
+            StateEntity.Update(gameTime);
+            var stateRect = MovementEntity.Rect;
+            stateRect.Offset(-10, -10);
+            StateEntity.Rect.Location = stateRect.Location;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             MovementEntity.Draw(spriteBatch);
+            if (MaxPower)
+                StateEntity.Draw(spriteBatch);
         }
 
     }
