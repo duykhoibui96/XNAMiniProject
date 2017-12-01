@@ -31,6 +31,7 @@ namespace MiniProject2D.GameComponent
                 if (value == -1)
                 {
                     frameIndex = defaultFrameIndex;
+                    elapsedTime = 0;
                     inAnimationMode = false;
                     return;
                 }

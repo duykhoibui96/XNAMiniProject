@@ -47,6 +47,7 @@ namespace MiniProject2D
 
             ResManager.Instance.InitComponents(this);
             var match = new GameMatch(this) { IsVisible = false };
+            match.Init();
             var pauseView = new GamePause(this) { IsVisible = false };
             var menuView = new MenuView(this);
             var winView = new WinnerView(this) { IsVisible = false };
@@ -60,7 +61,7 @@ namespace MiniProject2D
                 loseView
             };
 
-
+            SoundManager.Instance.PlayMenuMusic();
             base.Initialize();
         }
 
@@ -141,6 +142,8 @@ namespace MiniProject2D
                     }
                     break;
                 case EventBoard.Event.StartGame:
+                    SoundManager.Instance.StopPlayingMenuMusic();
+                    SoundManager.Instance.PlayGameMusic();
                     foreach (var view in gameViews)
                     {
                         if (view.Type == GameView.ViewType.Match)
@@ -155,6 +158,8 @@ namespace MiniProject2D
                     }
                     break;
                 case EventBoard.Event.ReturnToMenu:
+                    SoundManager.Instance.StopPlayingGameMusic();
+                    SoundManager.Instance.PlayMenuMusic();
                     foreach (var view in gameViews)
                     {
                         view.IsVisible = view.Type == GameView.ViewType.Menu;

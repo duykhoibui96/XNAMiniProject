@@ -10,5 +10,13 @@ namespace MiniProject2D.Config
         public static int Velocity = 2;
         public static int Unit = 50;
         public static int CharacterSwitchFrameDelay = 50;
+
+        public static Random Rand;
+        
+        static Configuration()
+        {
+            Rand = new Random();
+        }
+
     }
 }

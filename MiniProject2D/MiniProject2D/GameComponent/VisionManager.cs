@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniProject2D.Model;
 
 namespace MiniProject2D.GameComponent
@@ -61,29 +62,21 @@ namespace MiniProject2D.GameComponent
             }
         }
 
-        public void Filter(VisionManager currentVisionManager, Rectangle area, Rectangle entrance, Rectangle exit, BackgroundEntity[] obstacles)
-        {
-            var currentVisions = currentVisionManager.Visions;
-            for (int i = 0; i < currentVisions.Length; i++)
-            {
-                if (currentVisions[i] != null)
-                    Visions[i].Filter(currentVisions[i], area, entrance, exit, obstacles);
-            }
-        }
-
-        public void Update(Rectangle newRect)
+        public void Update(Rectangle currentRect, TerrainManager terrainManager)
         {
             foreach (var vision in Visions.Where(vision => vision != null))
             {
-                vision.Update(newRect);
+                vision.Update(currentRect, terrainManager);
             }
         }
 
-        public Vision IsValidDirection(Vision.Direction direction)
+        public void Draw(SpriteBatch spriteBatch, bool isDisabled = false)
         {
-            int directionIndex = (int)direction;
-            var valid = Visions[directionIndex] != null && Visions[directionIndex].CanKeepMoving();
-            return valid ? Visions[directionIndex] : null;
+            foreach (var vision in Visions.Where(vision => vision != null))
+            {
+                vision.Draw(spriteBatch);
+            }
         }
+
     }
 }

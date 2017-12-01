@@ -22,31 +22,22 @@ namespace MiniProject2D.GameComponent
             Zombie = 3
         }
 
-        private Vision.Direction currentMovementState;
-
         private bool isHover;
         public VisionManager VisionList;
         public AnimationEntity MovementEntity;
         public AnimationEntity StateEntity;
+        public Vision.Direction PreferableDirection = Vision.Direction.None;
+        public Point offsetPoint;
         public bool MaxPower;
+        public int NumOfSteps = 0;
 
         public ObjectType ObjType;
-
-        public Vision.Direction CurrentMovementState
-        {
-            get { return currentMovementState; }
-            set
-            {
-                currentMovementState = value;
-                MovementEntity.AnimationType = (int)value;
-            }
-        }
 
         public Character(AnimationEntity movementEntity, ObjectType objType)
         {
             MovementEntity = movementEntity;
+            offsetPoint = new Point(0, 0);
             ObjType = objType;
-            currentMovementState = Vision.Direction.None;
             var stateRect = movementEntity.Rect;
             stateRect.Width += 20;
             stateRect.Height += 20;
@@ -54,26 +45,100 @@ namespace MiniProject2D.GameComponent
             {
                 AnimationMode = true
             };
-            VisionList = new VisionManager(MovementEntity.Rect,objType);
+            VisionList = new VisionManager(MovementEntity.Rect, objType);
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, TerrainManager terrainManager)
         {
+            var mouseState = Mouse.GetState();
+            MovementEntity.Rect.Offset(offsetPoint);
             MovementEntity.Update(gameTime);
-            VisionList.Update(MovementEntity.Rect);
-            if (!MaxPower) return;
-            StateEntity.Update(gameTime);
-            var stateRect = MovementEntity.Rect;
-            stateRect.Offset(-10, -10);
-            StateEntity.Rect.Location = stateRect.Location;
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            MovementEntity.Draw(spriteBatch);
+            VisionList.Update(MovementEntity.Rect, terrainManager);
+            isHover = MovementEntity.Rect.Contains(mouseState.X, mouseState.Y);
             if (MaxPower)
-                StateEntity.Draw(spriteBatch);
+            {
+                StateEntity.Update(gameTime);
+                var stateRect = MovementEntity.Rect;
+                stateRect.Offset(-10, -10);
+                StateEntity.Rect.Location = stateRect.Location;
+            }
         }
 
+        public void Draw(SpriteBatch spriteBatch, bool isDisabled = false)
+        {
+            MovementEntity.Draw(spriteBatch, isDisabled);
+            if (isHover)
+                VisionList.Draw(spriteBatch, isDisabled);
+            if (MaxPower)
+                StateEntity.Draw(spriteBatch, isDisabled);
+        }
+
+        public void StartMoving(Vision.Direction movementDirection)
+        {
+            var velocity = Configuration.Velocity;
+            switch (movementDirection)
+            {
+                case Vision.Direction.Bottom:
+                    offsetPoint.Y = velocity;
+                    break;
+                case Vision.Direction.Left:
+                    offsetPoint.X = -velocity;
+                    break;
+                case Vision.Direction.Right:
+                    offsetPoint.X = velocity;
+                    break;
+                case Vision.Direction.Top:
+                    offsetPoint.Y = -velocity;
+                    break;
+                case Vision.Direction.TopLeft:
+                    offsetPoint.X = -velocity;
+                    offsetPoint.Y = -velocity;
+                    break;
+                case Vision.Direction.BottomLeft:
+                    offsetPoint.X = -velocity;
+                    offsetPoint.Y = velocity;
+                    break;
+                case Vision.Direction.TopRight:
+                    offsetPoint.X = velocity;
+                    offsetPoint.Y = -velocity;
+                    break;
+                case Vision.Direction.BottomRight:
+                    offsetPoint.X = velocity;
+                    offsetPoint.Y = velocity;
+                    break;
+            }
+
+            MovementEntity.AnimationType = (int)movementDirection;
+            MovementEntity.AnimationMode = true;
+
+            if (NumOfSteps == 0)
+            {
+                NumOfSteps = PreferableDirection.Equals(Vision.Direction.None) ? 1 : 2;
+            }
+        }
+
+        public void Stop()
+        {
+            offsetPoint.X = offsetPoint.Y = 0;
+            MovementEntity.AnimationMode = false;
+        }
+
+        public Vision.Direction Find(Character player)
+        {
+            foreach (var vision in VisionList.Visions)
+            {
+                if (vision != null && vision.Contains(player.MovementEntity.Rect))
+                {
+                    if (PreferableDirection.Equals(Vision.Direction.None))
+                    {
+                        SoundManager.Instance.PlaySoundWhenEncounterMonster();
+                    }
+                    return vision.Dir;
+                }
+                    
+            }
+
+            return Vision.Direction.None;
+        }
     }
 }

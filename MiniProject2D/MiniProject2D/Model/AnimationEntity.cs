@@ -51,10 +51,10 @@ namespace MiniProject2D.Model
             sourceRect = spriteBuilder.GetFrameRect();
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, bool isDisabled = false)
         {
             if (IsVisible)
-                spriteBatch.Draw(Sprite, Rect, sourceRect, CurrentColor);
+                spriteBatch.Draw(Sprite, Rect, sourceRect, isDisabled ? Color.Gray : CurrentColor);
         }
     }
 }

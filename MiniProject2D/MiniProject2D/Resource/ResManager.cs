@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniProject2D.Resource
@@ -41,6 +42,11 @@ namespace MiniProject2D.Resource
         public SpriteFont NotifyFont { get; private set; }
         public Texture2D Vision { get; private set; }
 
+        public SoundEffect GameMusic { get; private set; }
+        public SoundEffect MonsterEncounter { get; private set; }
+        public SoundEffect MenuMusic{ get; private set; }
+
+
         public void InitComponents(Game1 game)
         {
             Wall = game.Content.Load<Texture2D>("Map/wall");
@@ -74,6 +80,9 @@ namespace MiniProject2D.Resource
             ResetMatchHover = game.Content.Load<Texture2D>("Button/reset-match_hover");
             NotifyFont = game.Content.Load<SpriteFont>("Font/GameFont");
             Vision = game.Content.Load<Texture2D>("Others/vision");
+            GameMusic = game.Content.Load<SoundEffect>("Sound/game-music");
+            MenuMusic = game.Content.Load<SoundEffect>("Sound/menu-music");
+            MonsterEncounter = game.Content.Load<SoundEffect>("Sound/monster-encounter");
         }
 
         public static ResManager Instance;

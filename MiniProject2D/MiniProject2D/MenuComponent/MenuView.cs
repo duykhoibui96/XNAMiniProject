@@ -34,11 +34,6 @@ namespace MiniProject2D.MenuComponent
             if (!isEnabled || !IsVisible) return;
             newGame.Update(gameTime);
             exit.Update(gameTime);
-            if (!UserInput.Instance.IsLeftClick) return;
-            if (newGame.IsHover)
-                newGame.LeftClick();
-            else if (exit.IsHover)
-                exit.LeftClick();
         }
 
         public override void Draw(SpriteBatch spriteBatch)

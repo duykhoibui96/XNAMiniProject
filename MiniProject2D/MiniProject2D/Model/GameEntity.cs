@@ -23,10 +23,10 @@ namespace MiniProject2D.Model
 
         public abstract void Update(GameTime gameTime);
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch, bool isDisabled = false)
         {
-            if (IsVisible)
-                spriteBatch.Draw(Sprite, Rect, CurrentColor);
+            if (!IsVisible) return;
+            spriteBatch.Draw(Sprite, Rect, isDisabled ? Color.Gray : CurrentColor);
         }
     }
 }
