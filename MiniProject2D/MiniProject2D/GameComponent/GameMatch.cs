@@ -25,15 +25,16 @@ namespace MiniProject2D.GameComponent
 
         public enum State
         {
-            WaitingForUser = 0, //Chờ input từ người chơi
-            MonsterMovementSetting = 1, //Thiết lập trạng thái di chuyển cho quái vật
-            Moving = 2,//Người chơi và quái vật trong quá trình di chuyển
-            FinishMoving = 3,
-            PlayerDiscorved = 4,//Quái vật phát hiện người chơi
-            PlayerDeath = 5,//Người chơi bị giết
-            TreasureCollected = 6,//Người chơi thu thập được kho báu
-            Lose = 7,//Thua -> bị quái vật giết
-            Win = 8//Thắng -> ra được mê cung
+            Start = 0,
+            WaitingForUser = 1, //Chờ input từ người chơi
+            MonsterMovementSetting = 2, //Thiết lập trạng thái di chuyển cho quái vật
+            Moving = 3,//Người chơi và quái vật trong quá trình di chuyển
+            FinishMoving = 4,
+            PlayerDiscorved = 5,//Quái vật phát hiện người chơi
+            PlayerDeath = 6,//Người chơi bị giết
+            TreasureCollected = 7,//Người chơi thu thập được kho báu
+            Lose = 8,//Thua -> bị quái vật giết
+            Win = 9//Thắng -> ra được mê cung
         }
 
         private Random random;
@@ -317,10 +318,7 @@ namespace MiniProject2D.GameComponent
                     {
                         var direction = currentObj.GenerateDirection();
                         if (currentObj.ApplyDirection(direction))
-                        {
                             state = State.Moving;
-                        }
-
                     }
                     break;
                 case State.FinishMoving:
@@ -401,11 +399,6 @@ namespace MiniProject2D.GameComponent
                 obj.Update(gameTime, area.Rect, entrance.Rect, exit.Rect, obstacles);
             }
         }
-
-        //private bool CheckPlayerDiscovered()
-        //{
-        //    return movingObjIndex != 0 && characterInfoList[movingObjIndex].Visions.Any(item => item.Equals(characterInfoList[0].Object.MovementEntity.Rect));
-        //}
 
         private bool CheckCollision()
         {
