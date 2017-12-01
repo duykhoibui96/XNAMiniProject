@@ -13,15 +13,23 @@ namespace MiniProject2D.Model
 
         private SoundEffectInstance gameMusic;
         private SoundEffectInstance menuMusic;
+        private SoundEffectInstance footSteps;
         private SoundEffect monsterEncounter;
+        private SoundEffect win;
+        private SoundEffect lose;
 
         private SoundManager()
         {
             gameMusic = ResManager.Instance.GameMusic.CreateInstance();
             gameMusic.IsLooped = true;
+            gameMusic.Volume = 0.5f;
             menuMusic = ResManager.Instance.MenuMusic.CreateInstance();
             menuMusic.IsLooped = true;
+            footSteps = ResManager.Instance.FootSteps.CreateInstance();
+            footSteps.Pitch = 1;
             monsterEncounter = ResManager.Instance.MonsterEncounter;
+            win = ResManager.Instance.WinSound;
+            lose = ResManager.Instance.LoseSound;
         }
 
         static SoundManager()
@@ -56,6 +64,26 @@ namespace MiniProject2D.Model
         public void PlaySoundWhenEncounterMonster()
         {
             monsterEncounter.Play();
+        }
+
+        public void PlaySoundWhenWin()
+        {
+            win.Play();
+        }
+        public void PlaySoundWhenLose()
+        {
+            lose.Play();
+        }
+        public void PlayFootStepSound()
+        {
+            if (footSteps.State.Equals(SoundState.Stopped))
+                footSteps.Play();
+        }
+
+        public void StopPlayingFootStepSound()
+        {
+            if (footSteps.State.Equals(SoundState.Playing))
+                footSteps.Stop();
         }
     }
 }

@@ -115,6 +115,7 @@ namespace MiniProject2D.GameComponent
             {
                 NumOfSteps = PreferableDirection.Equals(Vision.Direction.None) ? 1 : 2;
             }
+
         }
 
         public void Stop()

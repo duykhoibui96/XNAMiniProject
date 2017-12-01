@@ -166,6 +166,7 @@ namespace MiniProject2D
                     }
                     break;
                 case EventBoard.Event.ShowResultsWhenLose:
+                    SoundManager.Instance.PlaySoundWhenLose();
                     foreach (var view in gameViews)
                     {
                         switch (view.Type)
@@ -183,6 +184,7 @@ namespace MiniProject2D
                     }
                     break;
                 case EventBoard.Event.ShowResultsWhenWin:
+                    SoundManager.Instance.PlaySoundWhenWin();
                     foreach (var view in gameViews)
                     {
                         switch (view.Type)

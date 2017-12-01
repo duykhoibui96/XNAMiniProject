@@ -45,6 +45,10 @@ namespace MiniProject2D.Resource
         public SoundEffect GameMusic { get; private set; }
         public SoundEffect MonsterEncounter { get; private set; }
         public SoundEffect MenuMusic{ get; private set; }
+        public SoundEffect FootSteps { get; private set; }
+        public SoundEffect WinSound { get; private set; }
+        public SoundEffect LoseSound { get; private set; }
+
 
 
         public void InitComponents(Game1 game)
@@ -83,6 +87,9 @@ namespace MiniProject2D.Resource
             GameMusic = game.Content.Load<SoundEffect>("Sound/game-music");
             MenuMusic = game.Content.Load<SoundEffect>("Sound/menu-music");
             MonsterEncounter = game.Content.Load<SoundEffect>("Sound/monster-encounter");
+            FootSteps = game.Content.Load<SoundEffect>("Sound/footsteps");
+            WinSound = game.Content.Load<SoundEffect>("Sound/win");
+            LoseSound = game.Content.Load<SoundEffect>("Sound/lose");
         }
 
         public static ResManager Instance;

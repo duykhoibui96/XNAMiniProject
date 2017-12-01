@@ -186,6 +186,7 @@ namespace MiniProject2D.GameComponent
                         characterTrackerIndex++;
                         if (characterTrackerIndex >= characters.Length)
                         {
+                            // SoundManager.Instance.StopPlayingFootStepSound();
                             characterTrackerIndex = 0;
                         }
                     }
@@ -235,6 +236,7 @@ namespace MiniProject2D.GameComponent
                     {
                         targetPos = newPosition;
                         currentCharacter.StartMoving(movementDirection);
+                        //SoundManager.Instance.PlayFootStepSound();
                         isProcessing = true;
                     }
                 }
