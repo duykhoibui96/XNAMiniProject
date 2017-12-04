@@ -6,6 +6,7 @@ namespace MiniProject2D.Resource
 {
     class ResManager
     {
+        public Texture2D Cursor { get; private set; }
         public Texture2D Wall { get; private set; }
         public Texture2D Ground { get; private set; }
         public Texture2D Dialog { get; private set; }
@@ -54,6 +55,7 @@ namespace MiniProject2D.Resource
 
         public void InitComponents(Game game)
         {
+            Cursor = game.Content.Load<Texture2D>("Others/cursor");
             Wall = game.Content.Load<Texture2D>("Map/wall");
             Ground = game.Content.Load<Texture2D>("Map/ground");
             Dialog = game.Content.Load<Texture2D>("Others/dialog");

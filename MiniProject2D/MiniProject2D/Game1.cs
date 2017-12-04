@@ -19,6 +19,7 @@ namespace MiniProject2D
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        private Rectangle cursorRect;
         private ViewManager viewManager;
 
 
@@ -30,7 +31,6 @@ namespace MiniProject2D
                 PreferredBackBufferWidth = 1200
             };
 
-            this.IsMouseVisible = true;
             Content.RootDirectory = "Content";
         }
 
@@ -46,6 +46,7 @@ namespace MiniProject2D
 
             ResManager.Instance.InitComponents(this);
             viewManager = new ViewManager(GraphicsDevice);
+            cursorRect = new Rectangle(0, 0, 50, 50);
             base.Initialize();
         }
 
@@ -80,7 +81,7 @@ namespace MiniProject2D
             // Allows the game to exit
             KeyboardEvent.Instance.Update();
             MouseEvent.Instance.Update();
-
+            cursorRect.Location = MouseEvent.Instance.MousePosition;
             if (EventBoard.Instance.CurrentEvent.Equals(EventBoard.Event.Exit))
                 this.Exit();
 
@@ -100,8 +101,8 @@ namespace MiniProject2D
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             viewManager.Draw(spriteBatch);
+            spriteBatch.Draw(ResManager.Instance.Cursor, cursorRect, Color.White);
             spriteBatch.End();
-
             base.Draw(gameTime);
         }
     }
