@@ -46,7 +46,7 @@ namespace MiniProject2D.Model
         public void LeftClick()
         {
             SoundManager.Instance.PlaySound(ResManager.Instance.ClickSound);
-            EventBoard.Instance.CurrentEvent = ev;
+            EventBoard.Instance.AddEvent(ev);
         }
 
         public override void Draw(SpriteBatch spriteBatch, bool isDisabled = false)

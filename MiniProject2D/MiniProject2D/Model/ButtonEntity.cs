@@ -48,7 +48,7 @@ namespace MiniProject2D.Model
             if (MouseEvent.Instance.IsLeftClick)
             {
                 SoundManager.Instance.PlaySound(ResManager.Instance.ClickSound);
-                EventBoard.Instance.CurrentEvent = ev;
+                EventBoard.Instance.AddEvent(ev);
             }
                
 

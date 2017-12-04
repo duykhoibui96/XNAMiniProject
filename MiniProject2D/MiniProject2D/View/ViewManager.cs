@@ -32,7 +32,7 @@ namespace MiniProject2D.View
 
         private void CheckEvent()
         {
-            var ev = EventBoard.Instance.CurrentEvent;
+            var ev = EventBoard.Instance.GetEvent();
             var eventCatch = true;
 
             switch (ev)
@@ -80,7 +80,9 @@ namespace MiniProject2D.View
             }
 
             if (eventCatch)
-                EventBoard.Instance.Clear();
+            {
+                EventBoard.Instance.Finish();
+            }
 
         }
 

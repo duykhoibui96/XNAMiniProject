@@ -1,18 +1,70 @@
-﻿using Microsoft.Xna.Framework.Audio;
+﻿using System.Linq.Expressions;
+using Microsoft.Xna.Framework.Audio;
 using MiniProject2D.Resource;
 
 namespace MiniProject2D.Sound
 {
     class SoundManager
     {
+
+        private class BackupObject
+        {
+            public float MusicVolumn;
+            public float SoundVolumn;
+            public bool IsMute;
+        }
+
+        private BackupObject backupObject;
+
         public static SoundManager Instance;
 
         private SoundEffectInstance currentMusicInstance;
         private SoundEffect currentMusic;
+        private float soundVolumn = 1;
+
+        public float SoundVolumn
+        {
+            get { return soundVolumn; }
+            set { soundVolumn = value; }
+        }
+
+        public float MusicVolumn
+        {
+            get { return currentMusicInstance.Volume; }
+            set { currentMusicInstance.Volume = value; }
+        }
+
 
         public void PlaySound(SoundEffect music)
         {
-            music.Play();
+            var instance = music.CreateInstance();
+            instance.Volume = SoundVolumn;
+            instance.Play();
+        }
+
+        public void Backup()
+        {
+            backupObject = new BackupObject()
+            {
+                MusicVolumn = currentMusicInstance.Volume,
+                SoundVolumn = soundVolumn,
+                IsMute = currentMusicInstance.State == SoundState.Paused
+            };
+        }
+
+        public void Recover()
+        {
+            if (backupObject == null) return;
+            currentMusicInstance.Volume = backupObject.MusicVolumn;
+            soundVolumn = backupObject.SoundVolumn;
+            if (backupObject.IsMute)
+            {
+                PauseMusic();
+            }
+            else
+            {
+                ResumeMusic();
+            }
         }
 
         public void PlayMusic(SoundEffect music)
@@ -26,15 +78,12 @@ namespace MiniProject2D.Sound
             currentMusicInstance.Play();
         }
 
-        public void SetVolumn(float vol)
-        {
-            currentMusicInstance.Volume = vol;
-        }
 
         public void StopMusic()
         {
             if (currentMusic == null) return;
             currentMusicInstance.Stop();
+            currentMusicInstance.Dispose();
         }
 
         public void PauseMusic()

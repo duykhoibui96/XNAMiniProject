@@ -18,11 +18,24 @@ namespace MiniProject2D.EventHandler
             ReturnToMenu = 6,
             ShowResultsWhenWin = 7,
             ShowResultsWhenLose = 8,
-            Exit = 9
+            Exit = 9,
+            ApplySetting = 10,
+            CancelSetting = 11,
+            ApplySpriteToGame = 12
         }
 
         public static EventBoard Instance;
-        public Event CurrentEvent = Event.None;
+        private Stack<Event> events;
+
+        public void AddEvent(Event ev)
+        {
+            events.Push(ev);
+        }
+
+        public Event GetEvent()
+        {
+            return events.Count > 0 ? events.Peek() : Event.None;
+        }
 
         static EventBoard()
         {
@@ -31,12 +44,14 @@ namespace MiniProject2D.EventHandler
 
         private EventBoard()
         {
+            events = new Stack<Event>();
         }
 
-        public void Clear()
+        public void Finish()
         {
-            CurrentEvent = Event.None;
+            events.Pop();
         }
+
 
     }
 }

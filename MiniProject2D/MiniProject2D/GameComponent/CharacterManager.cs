@@ -1,7 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.ComponentModel;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniProject2D.Config;
+using MiniProject2D.EventHandler;
 using MiniProject2D.Input;
 using MiniProject2D.Model;
 using MiniProject2D.Resource;
@@ -79,45 +81,62 @@ namespace MiniProject2D.GameComponent
             }
         }
 
+        private void ApplySprite()
+        {
+            foreach (var character in characters)
+            {
+                switch (character.ObjType)
+                {
+                    case Character.ObjectType.Player:
+                        character.MovementEntity.CurrentColor = Setting.Instance.PlayerColor;
+                        break;
+                    case Character.ObjectType.Mummy:
+                        character.MovementEntity.CurrentColor = Setting.Instance.MummyColor;
+                        break;
+                    case Character.ObjectType.Scorpion:
+                        character.MovementEntity.CurrentColor = Setting.Instance.ScorpionColor;
+                        break;
+                    case Character.ObjectType.Zombie:
+                        character.MovementEntity.CurrentColor = Setting.Instance.ZombieColor;
+                        break;
+                }
+            }
+        }
+
         private Character ObjectInit(int startX, int startY, Character.ObjectType objectType)
         {
             var unit = Configuration.Unit;
             int numbersOfFrame = 0, defaultFrameIndex = 0;
             var sprite = ResManager.Instance.Player;
             var objType = Character.ObjectType.Player;
-            var color = Color.White;
 
             switch (objectType)
             {
                 case Character.ObjectType.Player:
                     numbersOfFrame = 4;
                     defaultFrameIndex = 2;
-                    color = Setting.Instance.PlayerColor;
                     break;
                 case Character.ObjectType.Mummy:
                     numbersOfFrame = 3;
                     defaultFrameIndex = 1;
                     sprite = ResManager.Instance.Mummy;
                     objType = Character.ObjectType.Mummy;
-                    color = Setting.Instance.MummyColor;
                     break;
                 case Character.ObjectType.Scorpion:
                     numbersOfFrame = 4;
                     defaultFrameIndex = 2;
                     sprite = ResManager.Instance.Scorpion;
                     objType = Character.ObjectType.Scorpion;
-                    color = Setting.Instance.ScorpionColor;
                     break;
                 case Character.ObjectType.Zombie:
                     numbersOfFrame = 6;
                     defaultFrameIndex = 0;
                     sprite = ResManager.Instance.Zombie;
                     objType = Character.ObjectType.Zombie;
-                    color = Setting.Instance.ZombieColor;
                     break;
             }
 
-            return new Character(new AnimationEntity(sprite, new Rectangle(startX, startY, unit, unit), color, numbersOfFrame, defaultFrameIndex), objType);
+            return new Character(new AnimationEntity(sprite, new Rectangle(startX, startY, unit, unit), Color.White, numbersOfFrame, defaultFrameIndex), objType);
         }
 
         private Vision.Direction GetUserMovementChoice()
@@ -171,6 +190,13 @@ namespace MiniProject2D.GameComponent
 
         public void Update(GameTime gameTime)
         {
+
+            if (EventBoard.Instance.GetEvent() == EventBoard.Event.ApplySpriteToGame)
+            {
+                ApplySprite();
+                EventBoard.Instance.Finish();
+            }
+
             var currentCharacter = characters[characterTrackerIndex];
 
             if (isProcessing)

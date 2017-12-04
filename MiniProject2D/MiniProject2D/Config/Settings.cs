@@ -25,9 +25,9 @@ namespace MiniProject2D.Config
         private Setting()
         {
             PlayerColor = Color.White;
-            MummyColor = Color.Green;
-            ScorpionColor = Color.Red;
-            ZombieColor = Color.GreenYellow;
+            MummyColor = Color.White;
+            ScorpionColor = Color.White;
+            ZombieColor = Color.White;
         }
 
     }

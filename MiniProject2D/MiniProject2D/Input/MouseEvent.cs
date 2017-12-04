@@ -24,15 +24,20 @@ namespace MiniProject2D.Input
         private MouseState previousState;
         private MouseState currentState;
 
+        public Point PreviousMousePosition;
         public Point MousePosition;
         public bool IsLeftClick;
+        public bool IsHoldLeftMouse;
 
         public void Update()
         {
             previousState = currentState;
+            PreviousMousePosition = MousePosition;
             currentState = Mouse.GetState();
             IsLeftClick = previousState.LeftButton.Equals(ButtonState.Pressed) &&
                           currentState.LeftButton.Equals(ButtonState.Released);
+            IsHoldLeftMouse = previousState.LeftButton.Equals(ButtonState.Pressed) &&
+                          currentState.LeftButton.Equals(ButtonState.Pressed);
             MousePosition.X = currentState.X;
             MousePosition.Y = currentState.Y;
         }

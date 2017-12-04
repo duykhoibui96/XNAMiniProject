@@ -82,7 +82,7 @@ namespace MiniProject2D
             KeyboardEvent.Instance.Update();
             MouseEvent.Instance.Update();
             cursorRect.Location = MouseEvent.Instance.MousePosition;
-            if (EventBoard.Instance.CurrentEvent.Equals(EventBoard.Event.Exit))
+            if (EventBoard.Instance.GetEvent().Equals(EventBoard.Event.Exit))
                 this.Exit();
 
             viewManager.Update(gameTime);

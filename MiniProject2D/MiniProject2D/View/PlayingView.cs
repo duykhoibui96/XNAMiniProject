@@ -20,8 +20,8 @@ namespace MiniProject2D.View
             Start = 0,
             Processing = 1,
             Pause = 2,
-            Lose = 3,//Thua -> bị quái vật giết
-            Win = 4,//Thắng -> ra được mê cung
+            Lose = 3,
+            Win = 4,
         }
 
         private CharacterManager characterManager;
@@ -106,7 +106,7 @@ namespace MiniProject2D.View
                 case State.Pause:
                     break;
                 case State.Win:
-                    EventBoard.Instance.CurrentEvent = EventBoard.Event.ShowResultsWhenWin;
+                    EventBoard.Instance.AddEvent(EventBoard.Event.ShowResultsWhenWin);
                     state = State.Pause;
                     mode = ViewMode.DISABLED;
                     break;
@@ -123,7 +123,7 @@ namespace MiniProject2D.View
                     endGameDelayTime -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;
                     if (endGameDelayTime <= 0)
                     {
-                        EventBoard.Instance.CurrentEvent = EventBoard.Event.ShowResultsWhenLose;
+                        EventBoard.Instance.AddEvent(EventBoard.Event.ShowResultsWhenLose);
                         state = State.Pause;
                         mode = ViewMode.DISABLED;
                     }
