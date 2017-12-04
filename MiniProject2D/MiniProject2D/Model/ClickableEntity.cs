@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniProject2D.EventHandler;
+using MiniProject2D.Input;
+using MiniProject2D.Resource;
+using MiniProject2D.Sound;
 
 namespace MiniProject2D.Model
 {
@@ -30,21 +34,25 @@ namespace MiniProject2D.Model
 
         public override void Update(GameTime gameTime)
         {
-            var mouseState = Mouse.GetState();
-            IsHover = Rect.Contains(mouseState.X, mouseState.Y);
-            if (IsHover && UserInput.Instance.IsLeftClick)
+            var hoverBefore = IsHover;
+            IsHover = Rect.Contains(MouseEvent.Instance.MousePosition);
+            if (!IsHover) return;
+            if (!hoverBefore)
+                SoundManager.Instance.PlaySound(ResManager.Instance.HoverSound);
+            if (MouseEvent.Instance.IsLeftClick)
                 LeftClick();
         }
 
         public void LeftClick()
         {
-            EventBoard.Instance.Ev = ev;
+            SoundManager.Instance.PlaySound(ResManager.Instance.ClickSound);
+            EventBoard.Instance.CurrentEvent = ev;
         }
 
         public override void Draw(SpriteBatch spriteBatch, bool isDisabled = false)
         {
             if (isDisabled)
-                spriteBatch.Draw(hoverSprite, Rect, Color.Gray);
+                spriteBatch.Draw(Sprite, Rect, Color.Gray);
             else if (IsHover)
                 spriteBatch.Draw(hoverSprite, Rect, CurrentColor);
             else

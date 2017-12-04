@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Resources;
-using System.Security;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniProject2D.Config;
-using MiniProject2D.EventHandler;
-using MiniProject2D.GameComponent;
+using MiniProject2D.Input;
 using MiniProject2D.Model;
 using MiniProject2D.Resource;
+using MiniProject2D.Sound;
 
 namespace MiniProject2D.GameComponent
 {
@@ -20,8 +14,8 @@ namespace MiniProject2D.GameComponent
 
         private Character[] characters;
         private Point targetPos;
-        private int characterTrackerIndex = 0;
-        private bool isProcessing = false;
+        private int characterTrackerIndex;
+        private bool isProcessing;
         private TerrainManager terrainManager;
 
         public Point CollisionPos { get; set; }
@@ -91,39 +85,44 @@ namespace MiniProject2D.GameComponent
             int numbersOfFrame = 0, defaultFrameIndex = 0;
             var sprite = ResManager.Instance.Player;
             var objType = Character.ObjectType.Player;
+            var color = Color.White;
 
             switch (objectType)
             {
                 case Character.ObjectType.Player:
                     numbersOfFrame = 4;
                     defaultFrameIndex = 2;
+                    color = Setting.Instance.PlayerColor;
                     break;
                 case Character.ObjectType.Mummy:
                     numbersOfFrame = 3;
                     defaultFrameIndex = 1;
                     sprite = ResManager.Instance.Mummy;
                     objType = Character.ObjectType.Mummy;
+                    color = Setting.Instance.MummyColor;
                     break;
                 case Character.ObjectType.Scorpion:
                     numbersOfFrame = 4;
                     defaultFrameIndex = 2;
                     sprite = ResManager.Instance.Scorpion;
                     objType = Character.ObjectType.Scorpion;
+                    color = Setting.Instance.ScorpionColor;
                     break;
                 case Character.ObjectType.Zombie:
                     numbersOfFrame = 6;
                     defaultFrameIndex = 0;
                     sprite = ResManager.Instance.Zombie;
                     objType = Character.ObjectType.Zombie;
+                    color = Setting.Instance.ZombieColor;
                     break;
             }
 
-            return new Character(new AnimationEntity(sprite, new Rectangle(startX, startY, unit, unit), Color.White, numbersOfFrame, defaultFrameIndex), objType);
+            return new Character(new AnimationEntity(sprite, new Rectangle(startX, startY, unit, unit), color, numbersOfFrame, defaultFrameIndex), objType);
         }
 
         private Vision.Direction GetUserMovementChoice()
         {
-            var pressedKey = UserInput.Instance.PressedKey;
+            var pressedKey = KeyboardEvent.Instance.PressedKey;
             var movementState = Vision.Direction.None;
             switch (pressedKey)
             {
@@ -181,12 +180,12 @@ namespace MiniProject2D.GameComponent
                     currentCharacter.Stop();
                     Discover();
                     currentCharacter.NumOfSteps--;
+                    SoundManager.Instance.PlaySound(ResManager.Instance.FootSteps);
                     if (currentCharacter.NumOfSteps == 0)
                     {
                         characterTrackerIndex++;
                         if (characterTrackerIndex >= characters.Length)
                         {
-                            // SoundManager.Instance.StopPlayingFootStepSound();
                             characterTrackerIndex = 0;
                         }
                     }
@@ -236,7 +235,7 @@ namespace MiniProject2D.GameComponent
                     {
                         targetPos = newPosition;
                         currentCharacter.StartMoving(movementDirection);
-                        //SoundManager.Instance.PlayFootStepSound();
+                        SoundManager.Instance.PlaySound(ResManager.Instance.FootSteps);
                         isProcessing = true;
                     }
                 }

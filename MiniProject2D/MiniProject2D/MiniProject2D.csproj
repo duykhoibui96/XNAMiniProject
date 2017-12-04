@@ -73,29 +73,34 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\Configuration.cs" />
-    <Compile Include="GameComponent\GamePause.cs" />
-    <Compile Include="GameComponent\LoserView.cs" />
-    <Compile Include="GameComponent\PlayerScore.cs" />
     <Compile Include="Config\Settings.cs" />
     <Compile Include="EventHandler\EventBoard.cs" />
-    <Compile Include="EventHandler\UserInput.cs" />
+    <Compile Include="Input\KeyboardEvent.cs" />
     <Compile Include="GameComponent\Character.cs" />
     <Compile Include="GameComponent\CharacterManager.cs" />
     <Compile Include="GameComponent\SpriteBuilder.cs" />
-    <Compile Include="GameComponent\GameMatch.cs" />
+    <Compile Include="GameComponent\TerrainManager.cs" />
     <Compile Include="GameComponent\Vision.cs" />
     <Compile Include="GameComponent\VisionManager.cs" />
-    <Compile Include="GameComponent\WinnerView.cs" />
-    <Compile Include="MenuComponent\MenuView.cs" />
+    <Compile Include="Input\MouseEvent.cs" />
     <Compile Include="Model\BackgroundEntity.cs" />
+    <Compile Include="Model\ButtonEntity.cs" />
     <Compile Include="Model\ClickableEntity.cs" />
     <Compile Include="Model\GameEntity.cs" />
     <Compile Include="Model\AnimationEntity.cs" />
-    <Compile Include="Model\GameView.cs" />
+    <Compile Include="Sound\SoundManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Resource\ResManager.cs" />
+    <Compile Include="View\GameView.cs" />
+    <Compile Include="View\LoserView.cs" />
+    <Compile Include="View\MenuView.cs" />
+    <Compile Include="View\PlayingView.cs" />
+    <Compile Include="View\PauseView.cs" />
+    <Compile Include="View\SettingView.cs" />
+    <Compile Include="View\ViewManager.cs" />
+    <Compile Include="View\WinnerView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

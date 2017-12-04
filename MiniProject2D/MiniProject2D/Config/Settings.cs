@@ -7,12 +7,28 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniProject2D.Config
 {
-    class Settings
+    class Setting
     {
-        public Texture2D Player;
-        public Texture2D Mummy;
-        public Texture2D Zombie;
-        public Texture2D Scorpion;
+        public Color PlayerColor;
+        public Color MummyColor;
+        public Color ScorpionColor;
+        public Color ZombieColor;
+
+
+        public static Setting Instance;
+
+        static Setting()
+        {
+            Instance = new Setting();
+        }
+
+        private Setting()
+        {
+            PlayerColor = Color.White;
+            MummyColor = Color.Green;
+            ScorpionColor = Color.Red;
+            ZombieColor = Color.GreenYellow;
+        }
 
     }
 }

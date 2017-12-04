@@ -1,19 +1,19 @@
 ﻿using System;
-using System.Configuration;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MiniProject2D.Config;
 using MiniProject2D.EventHandler;
+using MiniProject2D.GameComponent;
 using MiniProject2D.Model;
 using MiniProject2D.Resource;
+using MiniProject2D.Sound;
 
-namespace MiniProject2D.GameComponent
+namespace MiniProject2D.View
 {
-    class GameMatch : GameView
+    class PlayingView : GameView
     {
         public enum State
         {
@@ -22,7 +22,6 @@ namespace MiniProject2D.GameComponent
             Pause = 2,
             Lose = 3,//Thua -> bị quái vật giết
             Win = 4,//Thắng -> ra được mê cung
-            End = 5
         }
 
         private CharacterManager characterManager;
@@ -33,48 +32,64 @@ namespace MiniProject2D.GameComponent
         private State state;
         private int endGameDelayTime;
 
-        public State GameState
+        public override ViewMode Mode
         {
-            get { return state; }
-            set { state = value; }
+            get { return base.Mode; }
+            set
+            {
+                base.Mode = value;
+                if (value == ViewMode.CURRENT)
+                    state = State.Processing;
+                else if (value == ViewMode.DISABLED)
+                    state = State.Pause;
+            }
         }
 
-        public GameMatch(Game game)
-            : base(ViewType.Match)
+        public PlayingView()
+            : base()
+        {
+            Type = ViewType.PlayingView;
+            SoundManager.Instance.PlayMusic(ResManager.Instance.GameMusic);
+        }
+
+        public override void Init(GraphicsDevice graphicsDevice)
         {
             var unit = Configuration.Unit;
+            int numbersOfObstacles, numbersOfZombie, numbersOfScorpion, numbersOfMummy;
+            GetComponentQuanlities(out numbersOfObstacles, out numbersOfMummy, out numbersOfScorpion,
+                out numbersOfZombie);
+
             explosion = new AnimationEntity(ResManager.Instance.Collision, new Rectangle(0, 0, 100, 100), Color.White, 4, 0);
             config = new ClickableEntity(EventBoard.Event.PauseGame, ResManager.Instance.Config,
                 ResManager.Instance.ConfigHover,
                 new Rectangle(0, 0, unit * 2, unit * 2), Color.White);
-            background = new BackgroundEntity(ResManager.Instance.Ground, new Rectangle(0, 0, game.GraphicsDevice.Viewport.Width, game.GraphicsDevice.Viewport.Height), Color.White);
+            background = new BackgroundEntity(ResManager.Instance.Ground, new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height), Color.White);
             terrainManager = new TerrainManager();
             characterManager = new CharacterManager();
-        }
-
-        public void Init()
-        {
-            var unit = Configuration.Unit;
-            var numbersOfObstacles = 20;
-            var numbersOfZombie = 1;
-            var numbersOfScorpion = 1;
-            var numbersOfMummy = 1;
 
             var map = terrainManager.Map;
 
-            GameState = State.Start;
+            state = State.Start;
             config.Rect.X = map.X + map.Width + unit;
             explosion.IsVisible = false;
             endGameDelayTime = 1000;
 
             terrainManager.Init(numbersOfObstacles);
             characterManager.Init(terrainManager, numbersOfMummy, numbersOfScorpion, numbersOfZombie);
-            SetEnabled(true);
+
+        }
+
+        private static void GetComponentQuanlities(out int numbersOfObstacles, out int numbersOfMummy, out int numbersOfScorpion, out int numbersOfZombie)
+        {
+            numbersOfObstacles = 20;
+            numbersOfMummy = 2;
+            numbersOfScorpion = 1;
+            numbersOfZombie = 1;
         }
 
         public override void Update(GameTime gameTime)
         {
-
+            if (mode != ViewMode.CURRENT) return;
             switch (state)
             {
                 case State.Start:
@@ -91,8 +106,9 @@ namespace MiniProject2D.GameComponent
                 case State.Pause:
                     break;
                 case State.Win:
-                    EventBoard.Instance.Ev = EventBoard.Event.ShowResultsWhenWin;
-                    state = State.End;
+                    EventBoard.Instance.CurrentEvent = EventBoard.Event.ShowResultsWhenWin;
+                    state = State.Pause;
+                    mode = ViewMode.DISABLED;
                     break;
                 case State.Lose:
                     if (!explosion.IsVisible)
@@ -101,16 +117,16 @@ namespace MiniProject2D.GameComponent
                         explosion.AnimationMode = true;
                         explosion.Rect.Location = characterManager.CollisionPos;
                         explosion.Rect.Offset(-25, -25);
+                        SoundManager.Instance.PlaySound(ResManager.Instance.Explosion);
                     }
                     explosion.Update(gameTime);
-                    endGameDelayTime -= (int) gameTime.ElapsedGameTime.TotalMilliseconds;
+                    endGameDelayTime -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;
                     if (endGameDelayTime <= 0)
                     {
-                        EventBoard.Instance.Ev = EventBoard.Event.ShowResultsWhenLose;
-                        state = State.End;
+                        EventBoard.Instance.CurrentEvent = EventBoard.Event.ShowResultsWhenLose;
+                        state = State.Pause;
+                        mode = ViewMode.DISABLED;
                     }
-                    break;
-                case State.End:
                     break;
             }
 
@@ -119,20 +135,14 @@ namespace MiniProject2D.GameComponent
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (!IsVisible) return;
-            var isDisabled = state.Equals(State.Pause) || state.Equals(State.End);
+            if (mode == ViewMode.INVISIBLE) return;
+            var isDisabled = mode == ViewMode.DISABLED;
             background.Draw(spriteBatch, isDisabled);
             terrainManager.Draw(spriteBatch, isDisabled);
             characterManager.Draw(spriteBatch, isDisabled);
             explosion.Draw(spriteBatch, isDisabled);
-            config.Draw(spriteBatch,isDisabled);
-
+            config.Draw(spriteBatch, isDisabled);
         }
 
-        public override void SetEnabled(bool isEnabled)
-        {
-            base.SetEnabled(isEnabled);
-            state = isEnabled ? State.Processing : State.Pause;
-        }
     }
 }

@@ -21,6 +21,11 @@ namespace MiniProject2D.Model
             CurrentColor = color;
         }
 
+        protected GameEntity()
+        {
+            
+        }
+
         public abstract void Update(GameTime gameTime);
 
         public virtual void Draw(SpriteBatch spriteBatch, bool isDisabled = false)

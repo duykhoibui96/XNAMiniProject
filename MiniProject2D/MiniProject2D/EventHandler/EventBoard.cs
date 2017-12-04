@@ -22,7 +22,7 @@ namespace MiniProject2D.EventHandler
         }
 
         public static EventBoard Instance;
-        private Event ev;
+        public Event CurrentEvent = Event.None;
 
         static EventBoard()
         {
@@ -33,15 +33,10 @@ namespace MiniProject2D.EventHandler
         {
         }
 
-        public Event Ev
+        public void Clear()
         {
-            get
-            {
-                var ev = this.ev;
-                this.ev = Event.None;
-                return ev;
-            }
-            set { ev = value; }
+            CurrentEvent = Event.None;
         }
+
     }
 }

@@ -5,9 +5,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniProject2D.EventHandler;
 using MiniProject2D.GameComponent;
-using MiniProject2D.MenuComponent;
+using MiniProject2D.Input;
 using MiniProject2D.Model;
 using MiniProject2D.Resource;
+using MiniProject2D.View;
 
 namespace MiniProject2D
 {
@@ -18,9 +19,7 @@ namespace MiniProject2D
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private Vector2 notifyPos;
-        private SpriteFont notifyFont;
-        private List<GameView> gameViews;
+        private ViewManager viewManager;
 
 
         public Game1()
@@ -46,22 +45,7 @@ namespace MiniProject2D
             // TODO: Add your initialization logic here
 
             ResManager.Instance.InitComponents(this);
-            var match = new GameMatch(this) { IsVisible = false };
-            match.Init();
-            var pauseView = new GamePause(this) { IsVisible = false };
-            var menuView = new MenuView(this);
-            var winView = new WinnerView(this) { IsVisible = false };
-            var loseView = new LoserView(this) { IsVisible = false };
-            gameViews = new List<GameView>()
-            {
-                menuView,
-                match,
-                pauseView,
-                winView,
-                loseView
-            };
-
-            SoundManager.Instance.PlayMenuMusic();
+            viewManager = new ViewManager(GraphicsDevice);
             base.Initialize();
         }
 
@@ -94,117 +78,15 @@ namespace MiniProject2D
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            UserInput.Instance.Update();
-            if (UserInput.Instance.PressedKey.Equals(Keys.P))
-                EventBoard.Instance.Ev = EventBoard.Event.PauseGame;
-            else if (UserInput.Instance.PressedKey.Equals(Keys.R))
-                EventBoard.Instance.Ev = EventBoard.Event.ResumeGame;
+            KeyboardEvent.Instance.Update();
+            MouseEvent.Instance.Update();
 
-            EventHandler(EventBoard.Instance.Ev);
-            foreach (var view in gameViews)
-            {
-                view.Update(gameTime);
-            }
+            if (EventBoard.Instance.CurrentEvent.Equals(EventBoard.Event.Exit))
+                this.Exit();
+
+            viewManager.Update(gameTime);
 
             base.Update(gameTime);
-        }
-
-        private void EventHandler(EventBoard.Event ev)
-        {
-            switch (ev)
-            {
-                case EventBoard.Event.PauseGame:
-                    foreach (var view in gameViews)
-                    {
-                        switch (view.Type)
-                        {
-                            case GameView.ViewType.Match:
-                                view.SetEnabled(false);
-                                break;
-                            case GameView.ViewType.Pause:
-                                view.IsVisible = true;
-                                break;
-                            default:
-                                view.IsVisible = false;
-                                break;
-                        }
-                    }
-                    break;
-                case EventBoard.Event.ResumeGame:
-                    foreach (var view in gameViews)
-                    {
-                        if (view.Type == GameView.ViewType.Match)
-                        {
-                            view.SetEnabled(true);
-                        }
-                        else
-                            view.IsVisible = false;
-                    }
-                    break;
-                case EventBoard.Event.StartGame:
-                    SoundManager.Instance.StopPlayingMenuMusic();
-                    SoundManager.Instance.PlayGameMusic();
-                    foreach (var view in gameViews)
-                    {
-                        if (view.Type == GameView.ViewType.Match)
-                        {
-                            view.IsVisible = true;
-                            ((GameMatch)view).Init();
-                        }
-                        else
-                        {
-                            view.IsVisible = false;
-                        }
-                    }
-                    break;
-                case EventBoard.Event.ReturnToMenu:
-                    SoundManager.Instance.StopPlayingGameMusic();
-                    SoundManager.Instance.PlayMenuMusic();
-                    foreach (var view in gameViews)
-                    {
-                        view.IsVisible = view.Type == GameView.ViewType.Menu;
-                    }
-                    break;
-                case EventBoard.Event.ShowResultsWhenLose:
-                    SoundManager.Instance.PlaySoundWhenLose();
-                    foreach (var view in gameViews)
-                    {
-                        switch (view.Type)
-                        {
-                            case GameView.ViewType.Match:
-                                view.SetEnabled(false);
-                                break;
-                            case GameView.ViewType.Win:
-                                view.IsVisible = true;
-                                break;
-                            default:
-                                view.IsVisible = false;
-                                break;
-                        }
-                    }
-                    break;
-                case EventBoard.Event.ShowResultsWhenWin:
-                    SoundManager.Instance.PlaySoundWhenWin();
-                    foreach (var view in gameViews)
-                    {
-                        switch (view.Type)
-                        {
-                            case GameView.ViewType.Match:
-                                view.SetEnabled(false);
-                                break;
-                            case GameView.ViewType.Lose:
-                                view.IsVisible = true;
-                                break;
-                            default:
-                                view.IsVisible = false;
-                                break;
-                        }
-                    }
-                    break;
-                case EventBoard.Event.Exit:
-                    this.Exit();
-                    break;
-            }
         }
 
         /// <summary>
@@ -217,10 +99,7 @@ namespace MiniProject2D
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            foreach (var view in gameViews)
-            {
-                view.Draw(spriteBatch);
-            }
+            viewManager.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

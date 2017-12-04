@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniProject2D.Config;
 using MiniProject2D.Model;
 using MiniProject2D.Resource;
+using MiniProject2D.Sound;
 
 namespace MiniProject2D.GameComponent
 {
@@ -29,7 +26,7 @@ namespace MiniProject2D.GameComponent
         public Vision.Direction PreferableDirection = Vision.Direction.None;
         public Point offsetPoint;
         public bool MaxPower;
-        public int NumOfSteps = 0;
+        public int NumOfSteps;
 
         public ObjectType ObjType;
 
@@ -132,7 +129,7 @@ namespace MiniProject2D.GameComponent
                 {
                     if (PreferableDirection.Equals(Vision.Direction.None))
                     {
-                        SoundManager.Instance.PlaySoundWhenEncounterMonster();
+                        SoundManager.Instance.PlaySound(ResManager.Instance.MonsterEncounter);
                     }
                     return vision.Dir;
                 }

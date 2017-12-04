@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,6 +8,8 @@ namespace MiniProject2D.Resource
     {
         public Texture2D Wall { get; private set; }
         public Texture2D Ground { get; private set; }
+        public Texture2D Dialog { get; private set; }
+        public Texture2D Light { get; private set; }
         public Texture2D Boundary { get; private set; }
         public Texture2D MenuBackground { get; private set; }
         public Texture2D ArrowLeft { get; private set; }
@@ -23,7 +22,6 @@ namespace MiniProject2D.Resource
         public Texture2D Scorpion { get; private set; }
         public Texture2D Collision { get; private set; }
         public Texture2D Flaming { get; private set; }
-        public Texture2D LoseGame { get; private set; }
         public Texture2D Config { get; private set; }
         public Texture2D ConfigHover { get; private set; }
         public Texture2D Resume { get; private set; }
@@ -38,23 +36,28 @@ namespace MiniProject2D.Resource
         public Texture2D ResetMatchHover { get; private set; }
         public Texture2D Exit { get; private set; }
         public Texture2D ExitHover { get; private set; }
-        
+     
         public SpriteFont NotifyFont { get; private set; }
         public Texture2D Vision { get; private set; }
 
         public SoundEffect GameMusic { get; private set; }
         public SoundEffect MonsterEncounter { get; private set; }
+        public SoundEffect Explosion { get; private set; }
         public SoundEffect MenuMusic{ get; private set; }
         public SoundEffect FootSteps { get; private set; }
         public SoundEffect WinSound { get; private set; }
         public SoundEffect LoseSound { get; private set; }
+        public SoundEffect ClickSound { get; private set; }
+        public SoundEffect HoverSound { get; private set; }
 
 
 
-        public void InitComponents(Game1 game)
+        public void InitComponents(Game game)
         {
             Wall = game.Content.Load<Texture2D>("Map/wall");
             Ground = game.Content.Load<Texture2D>("Map/ground");
+            Dialog = game.Content.Load<Texture2D>("Others/dialog");
+            Light = game.Content.Load<Texture2D>("Effect/light");
             Boundary = game.Content.Load<Texture2D>("Map/boundary");
             MenuBackground = game.Content.Load<Texture2D>("Others/menu-background");
             ArrowLeft = game.Content.Load<Texture2D>("Map/arrow-left");
@@ -67,7 +70,6 @@ namespace MiniProject2D.Resource
             Scorpion = game.Content.Load<Texture2D>("Character/scorpion");
             Collision = game.Content.Load<Texture2D>("Effect/collision");
             Flaming = game.Content.Load<Texture2D>("Effect/flaming");
-            LoseGame = game.Content.Load<Texture2D>("Notification/lose");
             Config = game.Content.Load<Texture2D>("Button/config");
             ConfigHover = game.Content.Load<Texture2D>("Button/config_hover");
             Resume = game.Content.Load<Texture2D>("Button/resume");
@@ -87,9 +89,12 @@ namespace MiniProject2D.Resource
             GameMusic = game.Content.Load<SoundEffect>("Sound/game-music");
             MenuMusic = game.Content.Load<SoundEffect>("Sound/menu-music");
             MonsterEncounter = game.Content.Load<SoundEffect>("Sound/monster-encounter");
+            Explosion = game.Content.Load<SoundEffect>("Sound/explosion");
             FootSteps = game.Content.Load<SoundEffect>("Sound/footsteps");
             WinSound = game.Content.Load<SoundEffect>("Sound/win");
             LoseSound = game.Content.Load<SoundEffect>("Sound/lose");
+            ClickSound = game.Content.Load<SoundEffect>("Sound/click");
+            HoverSound = game.Content.Load<SoundEffect>("Sound/hover");
         }
 
         public static ResManager Instance;

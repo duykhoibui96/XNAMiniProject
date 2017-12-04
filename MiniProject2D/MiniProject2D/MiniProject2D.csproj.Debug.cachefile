@@ -4,7 +4,6 @@ Content\Character\playerAnim.xnb
 Content\Character\zombie.xnb
 Content\Character\mummy.xnb
 Content\Character\scorpion.xnb
-Content\Notification\lose.xnb
 Content\Button\config.xnb
 Content\Button\config_hover.xnb
 Content\Button\resume.xnb
@@ -15,7 +14,6 @@ Content\Button\return-to-menu.xnb
 Content\Button\return-to-menu_hover.xnb
 Content\Map\wall.xnb
 Content\Map\boundary.xnb
-Content\Font\GameFont.xnb
 Content\Map\arrow-down.xnb
 Content\Map\arrow-left.xnb
 Content\Map\arrow-right.xnb
@@ -30,3 +28,15 @@ Content\Button\reset-match.xnb
 Content\Button\reset-match_hover.xnb
 Content\Effect\flaming.xnb
 Content\Others\vision.xnb
+Content\Font\GameFont.xnb
+Content\Sound\monster-encounter.xnb
+Content\Sound\game-music.xnb
+Content\Sound\menu-music.xnb
+Content\Sound\footsteps.xnb
+Content\Sound\lose.xnb
+Content\Sound\win.xnb
+Content\Sound\click.xnb
+Content\Sound\hover.xnb
+Content\Others\dialog.xnb
+Content\Effect\light.xnb
+Content\Sound\explosion.xnb
