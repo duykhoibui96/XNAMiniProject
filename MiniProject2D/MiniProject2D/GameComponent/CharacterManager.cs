@@ -34,16 +34,19 @@ namespace MiniProject2D.GameComponent
         public void Init(TerrainManager terrainManager, int numOfMummies, int numOfScorpions, int numOfZombies)
         {
             this.terrainManager = terrainManager;
-            RandomCharacters(numOfMummies, numOfScorpions, numOfZombies);
+            RandomCharacters(terrainManager.StartPoint, numOfMummies, numOfScorpions, numOfZombies);
             isProcessing = false;
             characterTrackerIndex = 0;
             numbersOfPlayerSteps = 0;
         }
 
-        private void RandomCharacters(int numbersOfMummy, int numbersOfScorpion, int numbersOfZombie)
+        private void RandomCharacters(Point mapStartPoint, int numbersOfMummy, int numbersOfScorpion, int numbersOfZombie)
         {
             var unit = Configuration.Unit;
             var rand = Configuration.Rand;
+            var mapWidth = Setting.Instance.MapWidth;
+            var mapHeight = Setting.Instance.MapHeight;
+
             var entrancePosition = terrainManager.EntrancePos;
 
             characters = new Character[1 + numbersOfMummy + numbersOfScorpion + numbersOfZombie];
@@ -51,40 +54,40 @@ namespace MiniProject2D.GameComponent
             var index = 1;
             for (int i = 0; i < numbersOfMummy; i++)
             {
-                var positionX = rand.Next(2, 20) * unit;
-                var positionY = rand.Next(2, 10) * unit;
+                var positionX = mapStartPoint.X + rand.Next(1, mapWidth - 1) * unit;
+                var positionY = mapStartPoint.Y + rand.Next(1, mapHeight - 1) * unit;
                 while (true)
                 {
                     if (terrainManager.isValidPosition(new Point(positionX, positionY)))
                         break;
-                    positionX = rand.Next(2, 20) * unit;
-                    positionY = rand.Next(2, 10) * unit;
+                    positionX = mapStartPoint.X + rand.Next(1, mapWidth - 1) * unit;
+                    positionY = mapStartPoint.Y + rand.Next(1, mapHeight - 1) * unit;
                 }
                 characters[index++] = ObjectInit(positionX, positionY, Character.ObjectType.Mummy);
             }
             for (int i = 0; i < numbersOfScorpion; i++)
             {
-                var positionX = rand.Next(2, 20) * unit;
-                var positionY = rand.Next(2, 10) * unit;
+                var positionX = mapStartPoint.X + rand.Next(1, mapWidth - 1) * unit;
+                var positionY = mapStartPoint.Y + rand.Next(1, mapHeight - 1) * unit;
                 while (true)
                 {
                     if (terrainManager.isValidPosition(new Point(positionX, positionY)))
                         break;
-                    positionX = rand.Next(2, 20) * unit;
-                    positionY = rand.Next(2, 10) * unit;
+                    positionX = mapStartPoint.X + rand.Next(1, mapWidth - 1) * unit;
+                    positionY = mapStartPoint.Y + rand.Next(1, mapHeight - 1) * unit;
                 }
                 characters[index++] = ObjectInit(positionX, positionY, Character.ObjectType.Scorpion);
             }
             for (int i = 0; i < numbersOfZombie; i++)
             {
-                var positionX = rand.Next(2, 20) * unit;
-                var positionY = rand.Next(2, 10) * unit;
+                var positionX = mapStartPoint.X + rand.Next(1, mapWidth - 1) * unit;
+                var positionY = mapStartPoint.Y + rand.Next(1, mapHeight - 1) * unit;
                 while (true)
                 {
                     if (terrainManager.isValidPosition(new Point(positionX, positionY)))
                         break;
-                    positionX = rand.Next(2, 20) * unit;
-                    positionY = rand.Next(2, 10) * unit;
+                    positionX = mapStartPoint.X + rand.Next(1, mapWidth - 1) * unit;
+                    positionY = mapStartPoint.Y + rand.Next(1, mapHeight - 1) * unit;
                 }
                 characters[index++] = ObjectInit(positionX, positionY, Character.ObjectType.Zombie);
             }

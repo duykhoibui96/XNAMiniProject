@@ -27,9 +27,6 @@ namespace MiniProject2D.Resource
         public Texture2D Collision { get; private set; }
         public Texture2D Flaming { get; private set; }
 
-        public Texture2D Config { get; private set; }
-        public Texture2D ConfigHover { get; private set; }
-       
         public SpriteFont NotifyFont { get; private set; }
         public SpriteFont SmallNotifyFont { get; private set; }
         public Texture2D Vision { get; private set; }
@@ -37,7 +34,7 @@ namespace MiniProject2D.Resource
         public SoundEffect GameMusic { get; private set; }
         public SoundEffect MonsterEncounter { get; private set; }
         public SoundEffect Explosion { get; private set; }
-        public SoundEffect MenuMusic{ get; private set; }
+        public SoundEffect MenuMusic { get; private set; }
         public SoundEffect FootSteps { get; private set; }
         public SoundEffect WinSound { get; private set; }
         public SoundEffect LoseSound { get; private set; }
@@ -68,8 +65,6 @@ namespace MiniProject2D.Resource
             Scorpion = game.Content.Load<Texture2D>("Character/scorpion");
             Collision = game.Content.Load<Texture2D>("Effect/collision");
             Flaming = game.Content.Load<Texture2D>("Effect/flaming");
-            Config = game.Content.Load<Texture2D>("Button/config");
-            ConfigHover = game.Content.Load<Texture2D>("Button/config_hover");
             NotifyFont = game.Content.Load<SpriteFont>("Font/GameFont");
             SmallNotifyFont = game.Content.Load<SpriteFont>("Font/Small-GameFont");
             Vision = game.Content.Load<Texture2D>("Others/vision");

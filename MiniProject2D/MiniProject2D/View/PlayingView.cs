@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
@@ -24,11 +25,17 @@ namespace MiniProject2D.View
             Win = 4,
         }
 
+        private BackgroundEntity logo;
+        private BackgroundEntity menuContainer;
+        private ButtonEntity playAgain;
+        private ButtonEntity setting;
+        private ButtonEntity returnToMenu;
+
+
         private CharacterManager characterManager;
         private TerrainManager terrainManager;
         private BackgroundEntity background;
         private AnimationEntity explosion;
-        private ClickableEntity config;
         private State state;
         private int endGameDelayTime;
 
@@ -56,28 +63,47 @@ namespace MiniProject2D.View
         {
             var graphicsDevice = Setting.Instance.Graphics;
             var unit = Configuration.Unit;
-            int numbersOfObstacles, numbersOfZombie, numbersOfScorpion, numbersOfMummy;
-            GetComponentQuanlities(out numbersOfObstacles, out numbersOfMummy, out numbersOfScorpion,
-                out numbersOfZombie);
+            var pos = new Vector2(unit, unit);
+
+            var menuTexture = new Texture2D(graphicsDevice, 1, 1);
+            menuTexture.SetData(new Color[]
+            {
+                Color.Blue
+            });
+
+            menuContainer = new BackgroundEntity(menuTexture, new Rectangle(0, 0, unit * 10, graphicsDevice.Viewport.Height), Color.White);
+
+            logo = new BackgroundEntity(ResManager.Instance.Logo, new Rectangle((int)pos.X, (int)pos.Y, unit * 8, unit * 2), Color.White);
+            pos.Y += unit * 3;
+            playAgain = new ButtonEntity("PLAY AGAIN", pos, EventBoard.Event.ResetGame);
+            pos.Y += unit * 3;
+            setting = new ButtonEntity("SETTING", pos, EventBoard.Event.OpenSettings);
+            pos.Y += unit * 3;
+            returnToMenu = new ButtonEntity("RETURN TO MENU", pos, EventBoard.Event.ReturnToMenu);
 
             explosion = new AnimationEntity(ResManager.Instance.Collision, new Rectangle(0, 0, 100, 100), Color.White, 4, 0);
-            config = new ClickableEntity(EventBoard.Event.PauseGame, ResManager.Instance.Config,
-                ResManager.Instance.ConfigHover,
-                new Rectangle(0, 0, unit * 2, unit * 2), Color.White);
             background = new BackgroundEntity(ResManager.Instance.Ground, new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height), Color.White);
             terrainManager = new TerrainManager();
             characterManager = new CharacterManager();
 
-            var map = terrainManager.Map;
+            InitMapAndCharacters();
+
+        }
+
+        private void InitMapAndCharacters()
+        {
+            var unit = Configuration.Unit;
+
+            int numbersOfObstacles, numbersOfZombie, numbersOfScorpion, numbersOfMummy;
+            GetComponentQuanlities(out numbersOfObstacles, out numbersOfMummy, out numbersOfScorpion,
+                out numbersOfZombie);
 
             state = State.Start;
-            config.Rect.X = map.X + map.Width + unit;
             explosion.IsVisible = false;
             endGameDelayTime = 1000;
 
-            terrainManager.Init(numbersOfObstacles);
+            terrainManager.Init(unit * 11, unit, numbersOfObstacles);
             characterManager.Init(terrainManager, numbersOfMummy, numbersOfScorpion, numbersOfZombie);
-
         }
 
         private static void GetComponentQuanlities(out int numbersOfObstacles, out int numbersOfMummy, out int numbersOfScorpion, out int numbersOfZombie)
@@ -91,13 +117,19 @@ namespace MiniProject2D.View
         public override void Update(GameTime gameTime)
         {
             if (mode != ViewMode.CURRENT) return;
+
+            HandledEvent();
+
+            playAgain.Update(gameTime);
+            setting.Update(gameTime);
+            returnToMenu.Update(gameTime);
+
             switch (state)
             {
                 case State.Start:
                     state = State.Processing;
                     break;
                 case State.Processing:
-                    config.Update(gameTime);
                     characterManager.Update(gameTime);
                     if (characterManager.IsWon())
                         state = State.Win;
@@ -136,15 +168,31 @@ namespace MiniProject2D.View
 
         }
 
+        private void HandledEvent()
+        {
+            if (EventBoard.Instance.GetEvent() == EventBoard.Event.ResetGame)
+            {
+                InitMapAndCharacters();
+                EventBoard.Instance.Finish();
+            }
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (mode == ViewMode.INVISIBLE) return;
             var isDisabled = mode == ViewMode.DISABLED;
             background.Draw(spriteBatch, isDisabled);
+
+            menuContainer.Draw(spriteBatch, isDisabled);
+            logo.Draw(spriteBatch);
+            playAgain.Draw(spriteBatch, isDisabled);
+            setting.Draw(spriteBatch, isDisabled);
+            returnToMenu.Draw(spriteBatch, isDisabled);
+
             terrainManager.Draw(spriteBatch, isDisabled);
             characterManager.Draw(spriteBatch, isDisabled);
             explosion.Draw(spriteBatch, isDisabled);
-            config.Draw(spriteBatch, isDisabled);
+
         }
 
     }

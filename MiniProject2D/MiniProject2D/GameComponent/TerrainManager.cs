@@ -27,6 +27,8 @@ namespace MiniProject2D.GameComponent
         private BackgroundEntity[] obstacles;
         private Texture2D doorArrow;
 
+        public Point StartPoint;
+
         private int numbersOfFreeSpace;
 
 
@@ -74,18 +76,23 @@ namespace MiniProject2D.GameComponent
             entrance = new BackgroundEntity(ResManager.Instance.Ground, new Rectangle(unit * 2, unit * 2, unit, unit), Color.White);
             exit = new BackgroundEntity(ResManager.Instance.Ground, new Rectangle(unit * 2, unit * 2, unit, unit), Color.White);
 
-            numbersOfFreeSpace = (mapWidth - 2)*(mapHeight - 2);
+            numbersOfFreeSpace = (mapWidth - 2) * (mapHeight - 2);
         }
 
-        public void Init(int numOfObstacles)
+        public void Init(int startX, int startY, int numOfObstacles)
         {
             var unit = Configuration.Unit;
 
-            boundary.Rect.Width = unit * 20;
-            boundary.Rect.Height = unit * 10;
+            StartPoint = new Point(startX, startY);
 
-            area.Rect.Width = 900;
-            area.Rect.Height = 400;
+            boundary.Rect.Location = StartPoint;
+            boundary.Rect.Width = unit * Setting.Instance.MapWidth;
+            boundary.Rect.Height = unit * Setting.Instance.MapHeight;
+
+            area.Rect.Location = StartPoint;
+            area.Rect.Offset(unit, unit);
+            area.Rect.Width = boundary.Rect.Width - 2 * unit;
+            area.Rect.Height = boundary.Rect.Height - 2 * unit;
 
             RandomObstacles(numOfObstacles);
             RandomDoors();
@@ -123,16 +130,16 @@ namespace MiniProject2D.GameComponent
             var posList = new List<Point>();
             for (int index = 0; index < obstacles.Length; index++)
             {
-                var horizontalPosition = rand.Next(2, mapWidth);
-                var verticalPosition = rand.Next(2, mapHeight);
-                var pos = new Point(unit * horizontalPosition, unit * verticalPosition);
+                var horizontalPosition = rand.Next(0, mapWidth - 2);
+                var verticalPosition = rand.Next(0, mapHeight - 2);
+                var pos = new Point(area.Rect.X + unit * horizontalPosition, area.Rect.Y + unit * verticalPosition);
 
                 while (posList.Contains(pos))
                 {
-                    horizontalPosition = rand.Next(2, 20);
-                    verticalPosition = rand.Next(2, 10);
-                    pos.X = unit * horizontalPosition;
-                    pos.Y = unit * verticalPosition;
+                    horizontalPosition = rand.Next(0, mapWidth - 2);
+                    verticalPosition = rand.Next(0, mapHeight - 2);
+                    pos.X = area.Rect.X + unit*horizontalPosition;
+                    pos.Y = area.Rect.Y + unit * verticalPosition;
                 }
 
                 posList.Add(pos);
@@ -160,18 +167,18 @@ namespace MiniProject2D.GameComponent
                     exitPositionType = BoundaryPositionType.Top;
                     doorArrow = ResManager.Instance.ArrowUp;
                     break;
-                case BoundaryPositionType.Left: //LEFT
+                case BoundaryPositionType.Left:
                     exitPositionType = BoundaryPositionType.Right;
                     doorArrow = ResManager.Instance.ArrowRight;
                     break;
-                case BoundaryPositionType.Right: //RIGHT
+                case BoundaryPositionType.Right:
                     exitPositionType = BoundaryPositionType.Left;
                     doorArrow = ResManager.Instance.ArrowLeft;
                     break;
             }
 
-            var entrancePositionIndex = entrancePositionType > (BoundaryPositionType)1 ? rand.Next(2, mapHeight) : rand.Next(2, mapWidth);
-            var exitPositionIndex = exitPositionType > (BoundaryPositionType)1 ? rand.Next(2, mapHeight) : rand.Next(2, mapWidth);
+            var entrancePositionIndex = entrancePositionType > (BoundaryPositionType)1 ? rand.Next(1, mapHeight - 1) : rand.Next(1, mapWidth - 1);
+            var exitPositionIndex = exitPositionType > (BoundaryPositionType)1 ? rand.Next(1, mapHeight - 1) : rand.Next(1, mapWidth - 1);
 
             entrance.Rect.Location = GetPosition(entrancePositionType, entrancePositionIndex);
             exit.Rect.Location = GetPosition(exitPositionType, exitPositionIndex);
@@ -181,16 +188,23 @@ namespace MiniProject2D.GameComponent
 
         private Point GetPosition(BoundaryPositionType positionType, int positionIndex)
         {
+            var startX = StartPoint.X;
+            var startY = StartPoint.Y;
+
+            var mapWidth = Setting.Instance.MapWidth;
+            var mapHeight = Setting.Instance.MapHeight;
+
+
             switch (positionType)
             {
                 case BoundaryPositionType.Top: //TOP
-                    return new Point(Configuration.Unit * positionIndex, Configuration.Unit);
+                    return new Point(startX + Configuration.Unit * positionIndex, startY);
                 case BoundaryPositionType.Bottom: //BOTTOM
-                    return new Point(Configuration.Unit * positionIndex, Configuration.Unit * 10);
+                    return new Point(startX + Configuration.Unit * positionIndex, startY + Configuration.Unit * (mapHeight - 1));
                 case BoundaryPositionType.Left: //LEFT
-                    return new Point(Configuration.Unit, Configuration.Unit * positionIndex);
+                    return new Point(startX, startY + Configuration.Unit * positionIndex);
                 case BoundaryPositionType.Right: //RIGHT
-                    return new Point(Configuration.Unit * 20, Configuration.Unit * positionIndex);
+                    return new Point(startX + Configuration.Unit * (mapWidth - 1), startY + Configuration.Unit * positionIndex);
 
             }
 

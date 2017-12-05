@@ -29,7 +29,7 @@ namespace MiniProject2D
             graphics = new GraphicsDeviceManager(this)
             {
                 PreferredBackBufferHeight = 650,
-                PreferredBackBufferWidth = 1200
+                PreferredBackBufferWidth = 1500
             };
 
             Content.RootDirectory = "Content";

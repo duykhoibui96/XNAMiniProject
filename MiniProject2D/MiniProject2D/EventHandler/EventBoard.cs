@@ -10,17 +10,16 @@ namespace MiniProject2D.EventHandler
         public enum Event
         {
             None = 0,
-            PauseGame = 1,
-            ResumeGame = 2,
-            OpenSettings = 3,
-            CloseSettings = 4,
-            StartGame = 5,
-            ReturnToMenu = 6,
-            ShowResult = 7,
-            Exit = 8,
-            ApplySetting = 9,
-            CancelSetting = 10,
-            ApplySpriteToGame = 11
+            ResetGame = 1,
+            OpenSettings = 2,
+            CloseSettings = 3,
+            StartGame = 4,
+            ReturnToMenu = 5,
+            ShowResult = 6,
+            Exit = 7,
+            ApplySetting = 8,
+            CancelSetting = 9,
+            ApplySpriteToGame = 10
         }
 
         public static EventBoard Instance;

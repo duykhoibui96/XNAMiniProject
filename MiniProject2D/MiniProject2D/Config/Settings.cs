@@ -16,8 +16,8 @@ namespace MiniProject2D.Config
 
         public GraphicsDevice Graphics;
 
-        public int MapWidth = 20;
-        public int MapHeight = 10;
+        public int MapWidth = 18;
+        public int MapHeight = 11;
 
         public static Setting Instance;
 

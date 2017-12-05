@@ -41,16 +41,6 @@ namespace MiniProject2D.View
                     disabledViews.Clear();
                     currentView = GetView(GameView.ViewType.PlayingView);
                     break;
-                case EventBoard.Event.PauseGame:
-                    currentView.Mode = GameView.ViewMode.DISABLED;
-                    disabledViews.Add(currentView);
-                    currentView = GetView(GameView.ViewType.PauseView);
-                    break;
-                case EventBoard.Event.ResumeGame:
-                    currentView = disabledViews.Last();
-                    currentView.Mode = GameView.ViewMode.CURRENT;
-                    disabledViews.Clear();
-                    break;
                 case EventBoard.Event.OpenSettings:
                     currentView.Mode = GameView.ViewMode.DISABLED;
                     disabledViews.Add(currentView);
@@ -92,9 +82,6 @@ namespace MiniProject2D.View
                     break;
                 case GameView.ViewType.PlayingView:
                     view = new PlayingView();
-                    break;
-                case GameView.ViewType.PauseView:
-                    view = new PauseView();
                     break;
                 case GameView.ViewType.SettingView:
                     view = new SettingView();

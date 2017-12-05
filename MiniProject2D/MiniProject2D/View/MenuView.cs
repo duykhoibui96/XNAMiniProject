@@ -34,7 +34,7 @@ namespace MiniProject2D.View
             var unit = Configuration.Unit;
             background = new BackgroundEntity(ResManager.Instance.MenuBackground, new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height), Color.White);
             var logoSprite = ResManager.Instance.Logo;
-            logo = new BackgroundEntity(logoSprite, new Rectangle(graphicsDevice.Viewport.Width / 2 - unit * 6, unit, unit * 12, unit * 3), Color.White);
+            logo = new BackgroundEntity(logoSprite, new Rectangle(graphicsDevice.Viewport.Width / 2 - unit * 6, unit / 2, unit * 12, unit * 3), Color.White);
             var pos = new Vector2(graphicsDevice.Viewport.Width / 2 - unit * 4, unit * 4);
             newGame = new ButtonEntity("NEW GAME", pos, EventBoard.Event.StartGame);
             pos.Y += unit * 3;
