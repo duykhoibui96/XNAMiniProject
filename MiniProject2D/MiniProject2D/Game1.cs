@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MiniProject2D.Config;
 using MiniProject2D.EventHandler;
 using MiniProject2D.GameComponent;
 using MiniProject2D.Input;
@@ -27,7 +28,7 @@ namespace MiniProject2D
         {
             graphics = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferHeight = 600,
+                PreferredBackBufferHeight = 650,
                 PreferredBackBufferWidth = 1200
             };
 
@@ -45,7 +46,8 @@ namespace MiniProject2D
             // TODO: Add your initialization logic here
 
             ResManager.Instance.InitComponents(this);
-            viewManager = new ViewManager(GraphicsDevice);
+            Setting.Instance.Graphics = GraphicsDevice;
+            viewManager = new ViewManager();
             cursorRect = new Rectangle(0, 0, 50, 50);
             base.Initialize();
         }

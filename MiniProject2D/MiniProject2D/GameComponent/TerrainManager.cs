@@ -27,6 +27,9 @@ namespace MiniProject2D.GameComponent
         private BackgroundEntity[] obstacles;
         private Texture2D doorArrow;
 
+        private int numbersOfFreeSpace;
+
+
         public Point EntrancePos
         {
             get { return entrance.Rect.Location; }
@@ -52,17 +55,26 @@ namespace MiniProject2D.GameComponent
             get { return area.Rect; }
         }
 
+        public int NumbersOfFreeSpace
+        {
+            get { return numbersOfFreeSpace; }
+            private set { numbersOfFreeSpace = value; }
+        }
+
         private BoundaryPositionType entrancePositionType;
         private BoundaryPositionType exitPositionType;
 
         public TerrainManager()
         {
             var unit = Configuration.Unit;
-            boundary = new BackgroundEntity(ResManager.Instance.Boundary, new Rectangle(unit, unit, unit * 20, unit * 10), Color.White);
+            var mapWidth = Setting.Instance.MapWidth;
+            var mapHeight = Setting.Instance.MapHeight;
+            boundary = new BackgroundEntity(ResManager.Instance.Boundary, new Rectangle(unit, unit, unit * mapWidth, unit * mapHeight), Color.White);
             area = new BackgroundEntity(ResManager.Instance.Ground, new Rectangle(boundary.Rect.X * 2, boundary.Rect.Y * 2, boundary.Rect.Width - 2 * unit, boundary.Rect.Height - 2 * unit), Color.White);
             entrance = new BackgroundEntity(ResManager.Instance.Ground, new Rectangle(unit * 2, unit * 2, unit, unit), Color.White);
-            exit = new BackgroundEntity(ResManager.Instance.Ground, new Rectangle(unit * 2, unit * 2, unit, unit), Color.White);   
+            exit = new BackgroundEntity(ResManager.Instance.Ground, new Rectangle(unit * 2, unit * 2, unit, unit), Color.White);
 
+            numbersOfFreeSpace = (mapWidth - 2)*(mapHeight - 2);
         }
 
         public void Init(int numOfObstacles)
@@ -86,17 +98,17 @@ namespace MiniProject2D.GameComponent
             return entrance.Rect.Location.Equals(newPosition) || exit.Rect.Location.Equals(newPosition) || (area.Rect.Contains(newPosition) && obstacles.All(obstacle => !obstacle.Rect.Location.Equals(newPosition)));
         }
 
-        public void Draw(SpriteBatch spriteBatch,bool isDisabled = true)
+        public void Draw(SpriteBatch spriteBatch, bool isDisabled = true)
         {
-            boundary.Draw(spriteBatch,isDisabled);
-            area.Draw(spriteBatch,isDisabled);
-            entrance.Draw(spriteBatch,isDisabled);
+            boundary.Draw(spriteBatch, isDisabled);
+            area.Draw(spriteBatch, isDisabled);
+            entrance.Draw(spriteBatch, isDisabled);
             spriteBatch.Draw(doorArrow, entrance.Rect, isDisabled ? Color.Gray : Color.White);
-            exit.Draw(spriteBatch,isDisabled);
+            exit.Draw(spriteBatch, isDisabled);
             spriteBatch.Draw(doorArrow, exit.Rect, isDisabled ? Color.Gray : Color.White);
             foreach (var obj in obstacles)
             {
-                obj.Draw(spriteBatch,isDisabled);
+                obj.Draw(spriteBatch, isDisabled);
             }
         }
 
@@ -105,18 +117,35 @@ namespace MiniProject2D.GameComponent
         {
             var unit = Configuration.Unit;
             var rand = Configuration.Rand;
+            var mapWidth = Setting.Instance.MapWidth;
+            var mapHeight = Setting.Instance.MapHeight;
             obstacles = new BackgroundEntity[numOfObstacles];
+            var posList = new List<Point>();
             for (int index = 0; index < obstacles.Length; index++)
             {
-                var horizontalPosition = rand.Next(2, 20);
-                var verticalPosition = rand.Next(2, 10);
-                obstacles[index] = new BackgroundEntity(ResManager.Instance.Wall, new Rectangle(unit * horizontalPosition, unit * verticalPosition, unit, unit), Color.White);
+                var horizontalPosition = rand.Next(2, mapWidth);
+                var verticalPosition = rand.Next(2, mapHeight);
+                var pos = new Point(unit * horizontalPosition, unit * verticalPosition);
+
+                while (posList.Contains(pos))
+                {
+                    horizontalPosition = rand.Next(2, 20);
+                    verticalPosition = rand.Next(2, 10);
+                    pos.X = unit * horizontalPosition;
+                    pos.Y = unit * verticalPosition;
+                }
+
+                posList.Add(pos);
+                numbersOfFreeSpace--;
+                obstacles[index] = new BackgroundEntity(ResManager.Instance.Wall, new Rectangle(pos.X, pos.Y, unit, unit), Color.White);
             }
         }
 
         private void RandomDoors()
         {
             var rand = Configuration.Rand;
+            var mapWidth = Setting.Instance.MapWidth;
+            var mapHeight = Setting.Instance.MapHeight;
             //Entrance's position must be opposite to exit's
 
             entrancePositionType = (BoundaryPositionType)rand.Next(4);//Random from 0 -> 3
@@ -141,8 +170,8 @@ namespace MiniProject2D.GameComponent
                     break;
             }
 
-            var entrancePositionIndex = entrancePositionType > (BoundaryPositionType)1 ? rand.Next(2, 10) : rand.Next(2, 20);
-            var exitPositionIndex = exitPositionType > (BoundaryPositionType)1 ? rand.Next(2, 10) : rand.Next(2, 20);
+            var entrancePositionIndex = entrancePositionType > (BoundaryPositionType)1 ? rand.Next(2, mapHeight) : rand.Next(2, mapWidth);
+            var exitPositionIndex = exitPositionType > (BoundaryPositionType)1 ? rand.Next(2, mapHeight) : rand.Next(2, mapWidth);
 
             entrance.Rect.Location = GetPosition(entrancePositionType, entrancePositionIndex);
             exit.Rect.Location = GetPosition(exitPositionType, exitPositionIndex);

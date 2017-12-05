@@ -70,8 +70,9 @@ namespace MiniProject2D.View
             Type = ViewType.SettingView;
         }
 
-        public override void Init(GraphicsDevice graphicsDevice)
+        public override void Init()
         {
+            var graphicsDevice = Setting.Instance.Graphics;
             var unit = Configuration.Unit;
             int width = graphicsDevice.Viewport.Width, height = graphicsDevice.Viewport.Height;
             int startX = 0, startY = 0;
@@ -190,9 +191,9 @@ namespace MiniProject2D.View
             border.SetData(new Color[] { Color.Purple });
             borderRect = new Rectangle(0, 0, 60, 60);
 
-            apply = new ButtonEntity("APPLY", new Vector2(startX + width / 4, startY + height - 70), Color.Green, EventBoard.Event.ApplySetting);
+            apply = new ButtonEntity("APPLY", new Vector2(startX + width / 6 - unit, startY + height - 100), EventBoard.Event.ApplySetting);
             // ok = new ButtonEntity("OK", new Vector2(startX + width / 2, startY + height - 100), Color.Yellow, EventBoard.Event.ApplySpriteToSetting);
-            cancel = new ButtonEntity("CANCEL", new Vector2(startX + 2 * width / 3, startY + height - 70), Color.Green, EventBoard.Event.CancelSetting);
+            cancel = new ButtonEntity("CANCEL", new Vector2(startX + width / 2 + unit, startY + height - 100), EventBoard.Event.CancelSetting);
         }
 
         private static void InitVolumn(GraphicsDevice graphicsDevice, int startX, int startY, int volumn, out BackgroundEntity volumnControl, out BackgroundEntity volumnProgress, out Vector2 volumnIndexPos)

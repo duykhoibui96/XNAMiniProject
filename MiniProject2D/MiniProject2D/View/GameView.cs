@@ -41,7 +41,7 @@ namespace MiniProject2D.View
             set { type = value; }
         }
 
-        public abstract void Init(GraphicsDevice graphicsDevice);
+        public abstract void Init();
         public abstract void Update(GameTime gameTime);
         public abstract void Draw(SpriteBatch spriteBatch);
 

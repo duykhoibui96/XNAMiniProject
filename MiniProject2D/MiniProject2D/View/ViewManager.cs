@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniProject2D.Config;
 using MiniProject2D.EventHandler;
+using MiniProject2D.GameComponent;
 using MiniProject2D.Model;
 using MiniProject2D.Sound;
 
@@ -12,13 +14,11 @@ namespace MiniProject2D.View
 {
     class ViewManager
     {
-        private GameView currentView;
+        private GameView currentView; 
         private List<GameView> disabledViews;
-        private GraphicsDevice graphicsDevice;
 
-        public ViewManager(GraphicsDevice graphicsDevice)
+        public ViewManager()
         {
-            this.graphicsDevice = graphicsDevice;
             currentView = GetView(GameView.ViewType.MenuView);
             disabledViews = new List<GameView>();
         }
@@ -65,13 +65,9 @@ namespace MiniProject2D.View
                     disabledViews.Clear();
                     currentView = GetView(GameView.ViewType.MenuView);
                     break;
-                case EventBoard.Event.ShowResultsWhenWin:
+                case EventBoard.Event.ShowResult:
                     disabledViews.Add(currentView);
-                    currentView = GetView(GameView.ViewType.WinnerView);
-                    break;
-                case EventBoard.Event.ShowResultsWhenLose:
-                    disabledViews.Add(currentView);
-                    currentView = GetView(GameView.ViewType.LoserView);
+                    currentView = GetView(PlayerRecord.Instance.IsWon ? GameView.ViewType.WinnerView : GameView.ViewType.LoserView);
                     break;
                 default:
                     eventCatch = false;
@@ -113,7 +109,7 @@ namespace MiniProject2D.View
 
             if (view != null)
             {
-                view.Init(graphicsDevice);
+                view.Init();
 
             }
 

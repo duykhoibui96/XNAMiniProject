@@ -20,7 +20,15 @@ namespace MiniProject2D.GameComponent
         private bool isProcessing;
         private TerrainManager terrainManager;
 
+        private int numbersOfPlayerSteps;
+
         public Point CollisionPos { get; set; }
+
+        public int NumbersOfPlayerSteps
+        {
+            get { return numbersOfPlayerSteps; }
+            private set { numbersOfPlayerSteps = value; }
+        }
 
 
         public void Init(TerrainManager terrainManager, int numOfMummies, int numOfScorpions, int numOfZombies)
@@ -29,6 +37,7 @@ namespace MiniProject2D.GameComponent
             RandomCharacters(numOfMummies, numOfScorpions, numOfZombies);
             isProcessing = false;
             characterTrackerIndex = 0;
+            numbersOfPlayerSteps = 0;
         }
 
         private void RandomCharacters(int numbersOfMummy, int numbersOfScorpion, int numbersOfZombie)
@@ -101,6 +110,8 @@ namespace MiniProject2D.GameComponent
                         break;
                 }
             }
+
+            EventBoard.Instance.Finish();
         }
 
         private Character ObjectInit(int startX, int startY, Character.ObjectType objectType)
@@ -194,7 +205,6 @@ namespace MiniProject2D.GameComponent
             if (EventBoard.Instance.GetEvent() == EventBoard.Event.ApplySpriteToGame)
             {
                 ApplySprite();
-                EventBoard.Instance.Finish();
             }
 
             var currentCharacter = characters[characterTrackerIndex];
@@ -207,6 +217,7 @@ namespace MiniProject2D.GameComponent
                     Discover();
                     currentCharacter.NumOfSteps--;
                     SoundManager.Instance.PlaySound(ResManager.Instance.FootSteps);
+                    if (currentCharacter.ObjType == Character.ObjectType.Player) numbersOfPlayerSteps++;
                     if (currentCharacter.NumOfSteps == 0)
                     {
                         characterTrackerIndex++;

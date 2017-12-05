@@ -16,12 +16,11 @@ namespace MiniProject2D.EventHandler
             CloseSettings = 4,
             StartGame = 5,
             ReturnToMenu = 6,
-            ShowResultsWhenWin = 7,
-            ShowResultsWhenLose = 8,
-            Exit = 9,
-            ApplySetting = 10,
-            CancelSetting = 11,
-            ApplySpriteToGame = 12
+            ShowResult = 7,
+            Exit = 8,
+            ApplySetting = 9,
+            CancelSetting = 10,
+            ApplySpriteToGame = 11
         }
 
         public static EventBoard Instance;

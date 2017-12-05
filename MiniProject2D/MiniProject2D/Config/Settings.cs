@@ -14,6 +14,10 @@ namespace MiniProject2D.Config
         public Color ScorpionColor;
         public Color ZombieColor;
 
+        public GraphicsDevice Graphics;
+
+        public int MapWidth = 20;
+        public int MapHeight = 10;
 
         public static Setting Instance;
 

@@ -52,8 +52,9 @@ namespace MiniProject2D.View
             SoundManager.Instance.PlayMusic(ResManager.Instance.GameMusic);
         }
 
-        public override void Init(GraphicsDevice graphicsDevice)
+        public override void Init()
         {
+            var graphicsDevice = Setting.Instance.Graphics;
             var unit = Configuration.Unit;
             int numbersOfObstacles, numbersOfZombie, numbersOfScorpion, numbersOfMummy;
             GetComponentQuanlities(out numbersOfObstacles, out numbersOfMummy, out numbersOfScorpion,
@@ -106,7 +107,8 @@ namespace MiniProject2D.View
                 case State.Pause:
                     break;
                 case State.Win:
-                    EventBoard.Instance.AddEvent(EventBoard.Event.ShowResultsWhenWin);
+                    EventBoard.Instance.AddEvent(EventBoard.Event.ShowResult);
+                    PlayerRecord.Instance.SetResult(true, 3 * terrainManager.NumbersOfFreeSpace - characterManager.NumbersOfPlayerSteps);
                     state = State.Pause;
                     mode = ViewMode.DISABLED;
                     break;
@@ -118,12 +120,13 @@ namespace MiniProject2D.View
                         explosion.Rect.Location = characterManager.CollisionPos;
                         explosion.Rect.Offset(-25, -25);
                         SoundManager.Instance.PlaySound(ResManager.Instance.Explosion);
+                        PlayerRecord.Instance.SetResult(false);
                     }
                     explosion.Update(gameTime);
                     endGameDelayTime -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;
                     if (endGameDelayTime <= 0)
                     {
-                        EventBoard.Instance.AddEvent(EventBoard.Event.ShowResultsWhenLose);
+                        EventBoard.Instance.AddEvent(EventBoard.Event.ShowResult);
                         state = State.Pause;
                         mode = ViewMode.DISABLED;
                     }

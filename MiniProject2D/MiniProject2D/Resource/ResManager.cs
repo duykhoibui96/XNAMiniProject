@@ -6,6 +6,7 @@ namespace MiniProject2D.Resource
 {
     class ResManager
     {
+        public Texture2D ButtonContainer { get; private set; }
         public Texture2D Cursor { get; private set; }
         public Texture2D Control { get; private set; }
         public Texture2D Wall { get; private set; }
@@ -24,22 +25,12 @@ namespace MiniProject2D.Resource
         public Texture2D Scorpion { get; private set; }
         public Texture2D Collision { get; private set; }
         public Texture2D Flaming { get; private set; }
+
         public Texture2D Config { get; private set; }
         public Texture2D ConfigHover { get; private set; }
-        public Texture2D Resume { get; private set; }
-        public Texture2D ResumeHover { get; private set; }
-        public Texture2D Settings { get; private set; }
-        public Texture2D SettingsHover { get; private set; }
-        public Texture2D ReturnToMenu { get; private set; }
-        public Texture2D ReturnToMenuHover { get; private set; }
-        public Texture2D NewGame { get; private set; }
-        public Texture2D NewGameHover { get; private set; }
-        public Texture2D ResetMatch { get; private set; }
-        public Texture2D ResetMatchHover { get; private set; }
-        public Texture2D Exit { get; private set; }
-        public Texture2D ExitHover { get; private set; }
-     
+       
         public SpriteFont NotifyFont { get; private set; }
+        public SpriteFont SmallNotifyFont { get; private set; }
         public Texture2D Vision { get; private set; }
 
         public SoundEffect GameMusic { get; private set; }
@@ -56,6 +47,7 @@ namespace MiniProject2D.Resource
 
         public void InitComponents(Game game)
         {
+            ButtonContainer = game.Content.Load<Texture2D>("Button/button-container");
             Cursor = game.Content.Load<Texture2D>("Others/cursor");
             Control = game.Content.Load<Texture2D>("Others/control");
             Wall = game.Content.Load<Texture2D>("Map/wall");
@@ -76,19 +68,8 @@ namespace MiniProject2D.Resource
             Flaming = game.Content.Load<Texture2D>("Effect/flaming");
             Config = game.Content.Load<Texture2D>("Button/config");
             ConfigHover = game.Content.Load<Texture2D>("Button/config_hover");
-            Resume = game.Content.Load<Texture2D>("Button/resume");
-            ResumeHover = game.Content.Load<Texture2D>("Button/resume_hover");
-            Settings = game.Content.Load<Texture2D>("Button/settings");
-            SettingsHover = game.Content.Load<Texture2D>("Button/settings_hover");
-            ReturnToMenu = game.Content.Load<Texture2D>("Button/return-to-menu");
-            ReturnToMenuHover = game.Content.Load<Texture2D>("Button/return-to-menu_hover");
-            NewGame = game.Content.Load<Texture2D>("Button/new-game");
-            NewGameHover = game.Content.Load<Texture2D>("Button/new-game_hover");
-            Exit = game.Content.Load<Texture2D>("Button/exit");
-            ExitHover = game.Content.Load<Texture2D>("Button/exit_hover");
-            ResetMatch = game.Content.Load<Texture2D>("Button/reset-match");
-            ResetMatchHover = game.Content.Load<Texture2D>("Button/reset-match_hover");
             NotifyFont = game.Content.Load<SpriteFont>("Font/GameFont");
+            SmallNotifyFont = game.Content.Load<SpriteFont>("Font/Small-GameFont");
             Vision = game.Content.Load<Texture2D>("Others/vision");
             GameMusic = game.Content.Load<SoundEffect>("Sound/game-music");
             MenuMusic = game.Content.Load<SoundEffect>("Sound/menu-music");

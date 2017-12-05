@@ -15,8 +15,8 @@ namespace MiniProject2D.View
 {
     class LoserView : GameView
     {
-        private ClickableEntity resetMatch;
-        private ClickableEntity returnToMenu;
+        private ButtonEntity playAgain;
+        private ButtonEntity returnToMenu;
         private Vector2 notifyPos;
         private SpriteFont notifyFont;
 
@@ -26,24 +26,22 @@ namespace MiniProject2D.View
             SoundManager.Instance.PlaySound(ResManager.Instance.LoseSound);
         }
 
-        public override void Init(GraphicsDevice graphicsDevice)
+        public override void Init()
         {
+            var graphicsDevice = Setting.Instance.Graphics;
             var unit = Configuration.Unit;
             notifyFont = ResManager.Instance.NotifyFont;
             notifyPos = new Vector2(graphicsDevice.Viewport.Width / 2, unit * 2);
-            var rect = new Rectangle(unit * 8, unit * 4, unit * 7,
-               unit * 2);
-            resetMatch = new ClickableEntity(EventBoard.Event.StartGame, ResManager.Instance.ResetMatch, ResManager.Instance.ResetMatchHover, rect, Color.White);
-            rect.Y += unit * 2;
-            rect.X -= unit * 2;
-            rect.Width += unit * 4;
-            returnToMenu = new ClickableEntity(EventBoard.Event.ReturnToMenu, ResManager.Instance.ReturnToMenu, ResManager.Instance.ReturnToMenuHover, rect, Color.White);
+            var pos = new Vector2(graphicsDevice.Viewport.Width / 2 - unit * 4, unit * 4);
+            playAgain = new ButtonEntity("PLAY AGAIN", pos, EventBoard.Event.StartGame);
+            pos.Y += unit * 3;
+            returnToMenu = new ButtonEntity("RETURN TO MENU", pos, EventBoard.Event.ReturnToMenu);
         }
 
         public override void Update(GameTime gameTime)
         {
             if (mode != ViewMode.CURRENT) return;
-            resetMatch.Update(gameTime);
+            playAgain.Update(gameTime);
             returnToMenu.Update(gameTime);
         }
 
@@ -56,7 +54,7 @@ namespace MiniProject2D.View
             // Draw the string
             spriteBatch.DrawString(notifyFont, output, notifyPos, Color.Blue,
                 0, FontOrigin, 3.0f, SpriteEffects.None, 0.5f);
-            resetMatch.Draw(spriteBatch);
+            playAgain.Draw(spriteBatch);
             returnToMenu.Draw(spriteBatch);
         }
     }
