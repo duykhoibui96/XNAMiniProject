@@ -22,8 +22,8 @@ namespace MiniProject2D.View
         private ButtonEntity returnToMenu;
         private Vector2 notifyPos;
         private Vector2 scorePos;
-        private SpriteFont notifyFont;
-        private SpriteFont smallNotifyFont;
+
+        private PlayerInfo playerInfo;
 
         private int playerScore;
 
@@ -40,19 +40,22 @@ namespace MiniProject2D.View
             var containerTexture = new Texture2D(Setting.Instance.Graphics, 1, 1);
             containerTexture.SetData(new Color[]
             {
-                Color.Black
+                Color.Green
             });
+
             container = new BackgroundEntity(containerTexture, new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height), Color.White);
             var unit = Configuration.Unit;
             playerScore = PlayerRecord.Instance.Score;
-            notifyFont = ResManager.Instance.NotifyFont;
-            smallNotifyFont = ResManager.Instance.SmallNotifyFont;
             notifyPos = new Vector2(graphicsDevice.Viewport.Width / 2, unit * 2);
-            scorePos = new Vector2(graphicsDevice.Viewport.Width / 2, unit * 4);
-            var pos = new Vector2(graphicsDevice.Viewport.Width / 2 - unit * 4, unit * 5);
+            scorePos = new Vector2(unit, unit * 4);
+            var pos = new Vector2(graphicsDevice.Viewport.Width - unit * 10, unit * 4);
             playAgain = new ButtonEntity("PLAY AGAIN", pos, EventBoard.Event.StartGame);
             pos.Y += unit * 3;
             returnToMenu = new ButtonEntity("RETURN TO MENU", pos, EventBoard.Event.ReturnToMenu);
+
+            playerInfo = new PlayerInfo();
+            playerInfo.Init(unit, unit * 6);
+
         }
 
         public override void Update(GameTime gameTime)
@@ -68,15 +71,15 @@ namespace MiniProject2D.View
             container.Draw(spriteBatch);
             string output = "YOU WIN!";
             // Find the center of the string
-            var FontOrigin = notifyFont.MeasureString(output) / 2;
+            var FontOrigin = ResManager.Instance.NotifyFont.MeasureString(output) / 2;
             // Draw the string
-            spriteBatch.DrawString(notifyFont, output, notifyPos, Color.Yellow,
+            spriteBatch.DrawString(ResManager.Instance.NotifyFont, output, notifyPos, Color.Yellow,
                 0, FontOrigin, 3.0f, SpriteEffects.None, 0.5f);
 
             output = "YOUR SCORE: " + playerScore;
-            FontOrigin = smallNotifyFont.MeasureString(output) / 2;
-            spriteBatch.DrawString(smallNotifyFont, output, scorePos, Color.Red,
-                0, FontOrigin, 3.0f, SpriteEffects.None, 0.5f);
+            spriteBatch.DrawString(ResManager.Instance.SmallNotifyFont, output, scorePos, Color.WhiteSmoke);
+            
+            playerInfo.Draw(spriteBatch);
 
             playAgain.Draw(spriteBatch);
             returnToMenu.Draw(spriteBatch);

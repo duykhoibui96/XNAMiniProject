@@ -16,11 +16,13 @@ namespace MiniProject2D.View
     class MenuView : GameView
     {
         private BackgroundEntity background;
+        private BackgroundEntity logo;
         private ButtonEntity newGame;
         private ButtonEntity setting;
         private ButtonEntity exit;
 
-        public MenuView() : base()
+        public MenuView()
+            : base()
         {
             Type = ViewType.MenuView;
             SoundManager.Instance.PlayMusic(ResManager.Instance.MenuMusic);
@@ -31,7 +33,9 @@ namespace MiniProject2D.View
             var graphicsDevice = Setting.Instance.Graphics;
             var unit = Configuration.Unit;
             background = new BackgroundEntity(ResManager.Instance.MenuBackground, new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height), Color.White);
-            var pos = new Vector2(unit*3, unit*2);
+            var logoSprite = ResManager.Instance.Logo;
+            logo = new BackgroundEntity(logoSprite, new Rectangle(graphicsDevice.Viewport.Width / 2 - unit * 6, unit, unit * 12, unit * 3), Color.White);
+            var pos = new Vector2(graphicsDevice.Viewport.Width / 2 - unit * 4, unit * 4);
             newGame = new ButtonEntity("NEW GAME", pos, EventBoard.Event.StartGame);
             pos.Y += unit * 3;
             setting = new ButtonEntity("SETTING", pos, EventBoard.Event.OpenSettings);
@@ -51,10 +55,11 @@ namespace MiniProject2D.View
         {
             if (mode == ViewMode.INVISIBLE) return;
             var isDisabled = Mode == ViewMode.DISABLED;
-            background.Draw(spriteBatch,isDisabled);
-            setting.Draw(spriteBatch,isDisabled);
-            newGame.Draw(spriteBatch,isDisabled);
-            exit.Draw(spriteBatch,isDisabled);
+            background.Draw(spriteBatch, isDisabled);
+            logo.Draw(spriteBatch,isDisabled);
+            setting.Draw(spriteBatch, isDisabled);
+            newGame.Draw(spriteBatch, isDisabled);
+            exit.Draw(spriteBatch, isDisabled);
         }
     }
 }
