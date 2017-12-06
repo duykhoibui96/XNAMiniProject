@@ -19,15 +19,17 @@ namespace MiniProject2D.View
         public enum ViewType
         {
             MenuView = 0,
-            PlayingView = 1,
-            PauseView = 2,
-            WinnerView = 3,
-            LoserView = 4,
-            SettingView = 5
+            MainView = 1,
+            PlayingView = 2,
+            PauseView = 3,
+            WinnerView = 4,
+            LoserView = 5,
+            SettingView = 6
         }
 
         protected ViewMode mode = ViewMode.CURRENT;
         protected ViewType type = ViewType.MenuView;
+        protected Rectangle viewContainer;
 
         public virtual ViewMode Mode
         {
@@ -41,7 +43,10 @@ namespace MiniProject2D.View
             set { type = value; }
         }
 
-        public abstract void Init();
+        public virtual void Init(Rectangle viewContainer)
+        {
+            this.viewContainer = viewContainer;
+        }
         public abstract void Update(GameTime gameTime);
         public abstract void Draw(SpriteBatch spriteBatch);
 

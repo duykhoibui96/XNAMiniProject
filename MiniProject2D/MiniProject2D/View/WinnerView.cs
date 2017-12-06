@@ -18,8 +18,6 @@ namespace MiniProject2D.View
     {
         private BackgroundEntity container;
 
-        private ButtonEntity playAgain;
-        private ButtonEntity returnToMenu;
         private Vector2 notifyPos;
         private Vector2 scorePos;
 
@@ -34,35 +32,29 @@ namespace MiniProject2D.View
             SoundManager.Instance.PlaySound(ResManager.Instance.WinSound);
         }
 
-        public override void Init()
+        public override void Init(Rectangle viewContainer)
         {
-            var graphicsDevice = Setting.Instance.Graphics;
+            base.Init(viewContainer);
             var containerTexture = new Texture2D(Setting.Instance.Graphics, 1, 1);
             containerTexture.SetData(new Color[]
             {
                 Color.Green
             });
 
-            container = new BackgroundEntity(containerTexture, new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height), Color.White);
+            container = new BackgroundEntity(containerTexture, viewContainer, Color.White);
             var unit = Configuration.Unit;
             playerScore = PlayerRecord.Instance.Score;
-            notifyPos = new Vector2(graphicsDevice.Viewport.Width / 2, unit * 2);
-            scorePos = new Vector2(unit, unit * 4);
-            var pos = new Vector2(graphicsDevice.Viewport.Width - unit * 10, unit * 4);
-            playAgain = new ButtonEntity("PLAY AGAIN", pos, EventBoard.Event.StartGame);
-            pos.Y += unit * 3;
-            returnToMenu = new ButtonEntity("RETURN TO MENU", pos, EventBoard.Event.ReturnToMenu);
+            notifyPos = new Vector2(viewContainer.X + viewContainer.Width / 2, viewContainer.Y + 2 * unit);
+            scorePos = new Vector2(viewContainer.X + unit, viewContainer.Y + unit * 4);
 
             playerInfo = new PlayerInfo();
-            playerInfo.Init(unit, unit * 6);
+            playerInfo.Init(viewContainer.X + unit, viewContainer.Y + unit * 6);
 
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (mode != GameView.ViewMode.CURRENT) return;
-            playAgain.Update(gameTime);
-            returnToMenu.Update(gameTime);
+            
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -81,8 +73,6 @@ namespace MiniProject2D.View
             
             playerInfo.Draw(spriteBatch);
 
-            playAgain.Draw(spriteBatch);
-            returnToMenu.Draw(spriteBatch);
         }
     }
 }

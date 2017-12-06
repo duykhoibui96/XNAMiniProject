@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
@@ -14,102 +15,64 @@ namespace MiniProject2D.View
 {
     class ViewManager
     {
-        private GameView currentView; 
-        private List<GameView> disabledViews;
+        private GameView invisibleView;
+        private GameView current;
+        private Rectangle container;
 
         public ViewManager()
         {
-            currentView = GetView(GameView.ViewType.MenuView);
-            disabledViews = new List<GameView>();
+            var graphicsDevice = Setting.Instance.Graphics;
+            container = new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
+            current = new MenuView();
+            current.Init(container);
         }
-
 
         public void Update(GameTime gameTime)
         {
-            CheckEvent();
-            currentView.Update(gameTime);
+            HandledEvent();
+            current.Update(gameTime);
         }
 
-        private void CheckEvent()
+        private void HandledEvent()
         {
             var ev = EventBoard.Instance.GetEvent();
-            var eventCatch = true;
+            var eventHandled = true;
+            var isInit = true;
 
             switch (ev)
             {
                 case EventBoard.Event.StartGame:
-                    disabledViews.Clear();
-                    currentView = GetView(GameView.ViewType.PlayingView);
+                    current = new MainView();
                     break;
                 case EventBoard.Event.OpenSettings:
-                    currentView.Mode = GameView.ViewMode.DISABLED;
-                    disabledViews.Add(currentView);
-                    currentView = GetView(GameView.ViewType.SettingView);
+                    invisibleView = current;
+                    current = new SettingView();
                     break;
                 case EventBoard.Event.CloseSettings:
-                    currentView = disabledViews.Last();
-                    currentView.Mode = GameView.ViewMode.CURRENT;
-                    disabledViews.Remove(disabledViews.Last());
+                    current = invisibleView;
+                    isInit = false;
                     break;
                 case EventBoard.Event.ReturnToMenu:
-                    disabledViews.Clear();
-                    currentView = GetView(GameView.ViewType.MenuView);
-                    break;
-                case EventBoard.Event.ShowResult:
-                    disabledViews.Add(currentView);
-                    currentView = GetView(PlayerRecord.Instance.IsWon ? GameView.ViewType.WinnerView : GameView.ViewType.LoserView);
+                    current = new MenuView();
                     break;
                 default:
-                    eventCatch = false;
+                    eventHandled = false;
                     break;
-
             }
 
-            if (eventCatch)
+            if (eventHandled)
             {
+                if (isInit)
+                    current.Init(container);
                 EventBoard.Instance.Finish();
             }
 
         }
 
-        private GameView GetView(GameView.ViewType viewType)
-        {
-            GameView view = null;
-            switch (viewType)
-            {
-                case GameView.ViewType.MenuView:
-                    view = new MenuView();
-                    break;
-                case GameView.ViewType.PlayingView:
-                    view = new PlayingView();
-                    break;
-                case GameView.ViewType.SettingView:
-                    view = new SettingView();
-                    break;
-                case GameView.ViewType.WinnerView:
-                    view = new WinnerView();
-                    break;
-                case GameView.ViewType.LoserView:
-                    view = new LoserView();
-                    break;
-            }
-
-            if (view != null)
-            {
-                view.Init();
-
-            }
-
-            return view;
-        }
-
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var disabledView in disabledViews)
-            {
-                disabledView.Draw(spriteBatch);
-            }
-            currentView.Draw(spriteBatch);
+            current.Draw(spriteBatch);
         }
+
     }
 }

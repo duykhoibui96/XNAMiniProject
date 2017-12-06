@@ -27,6 +27,7 @@ namespace MiniProject2D.EventHandler
 
         public void AddEvent(Event ev)
         {
+            if (events.Count > 0 && events.Peek() == ev) return;
             events.Push(ev);
         }
 

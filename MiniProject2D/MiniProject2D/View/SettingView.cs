@@ -70,7 +70,7 @@ namespace MiniProject2D.View
             Type = ViewType.SettingView;
         }
 
-        public override void Init()
+        public override void Init(Rectangle container)
         {
             var graphicsDevice = Setting.Instance.Graphics;
             var unit = Configuration.Unit;
@@ -83,7 +83,7 @@ namespace MiniProject2D.View
             {
                 Color.LightBlue
             });
-            container = new BackgroundEntity(containerTexture, new Rectangle(startX, startY, width, height), Color.White);
+            this.container = new BackgroundEntity(containerTexture, new Rectangle(startX, startY, width, height), Color.White);
             settingPosition = new Vector2(middle - ResManager.Instance.NotifyFont.MeasureString("SETTING").X / 2, startY + 20);
             playerSelectTitle = new Vector2(startX + 100, startY + 100);
 
