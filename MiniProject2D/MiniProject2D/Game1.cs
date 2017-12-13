@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
@@ -5,11 +6,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniProject2D.Config;
 using MiniProject2D.EventHandler;
-using MiniProject2D.GameComponent;
+using MiniProject2D.Information;
 using MiniProject2D.Input;
 using MiniProject2D.Model;
 using MiniProject2D.Resource;
-using MiniProject2D.View;
+using MiniProject2D.UI;
 
 namespace MiniProject2D
 {
@@ -20,17 +21,18 @@ namespace MiniProject2D
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private Rectangle cursorRect;
-        private ViewManager viewManager;
+        private UIManager viewManager;
+        private _2DModel mouse;
 
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferHeight = 650,
+                PreferredBackBufferHeight = 680,
                 PreferredBackBufferWidth = 1500
             };
+
 
             Content.RootDirectory = "Content";
         }
@@ -46,9 +48,8 @@ namespace MiniProject2D
             // TODO: Add your initialization logic here
 
             ResManager.Instance.InitComponents(this);
-            Setting.Instance.Graphics = GraphicsDevice;
-            viewManager = new ViewManager();
-            cursorRect = new Rectangle(0, 0, 50, 50);
+            Global.Instance.Graphics = GraphicsDevice;
+            viewManager = new UIManager();
             base.Initialize();
         }
 
@@ -60,6 +61,8 @@ namespace MiniProject2D
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            Global.Instance.RenderComponent = spriteBatch;
+            MouseEvent.Instance.InitMouseSprite();
 
             // TODO: use this.Content to load your game content here
         }
@@ -83,12 +86,9 @@ namespace MiniProject2D
             // Allows the game to exit
             KeyboardEvent.Instance.Update();
             MouseEvent.Instance.Update();
-            cursorRect.Location = MouseEvent.Instance.MousePosition;
             if (EventBoard.Instance.GetEvent().Equals(EventBoard.Event.Exit))
                 this.Exit();
-
             viewManager.Update(gameTime);
-
             base.Update(gameTime);
         }
 
@@ -98,13 +98,11 @@ namespace MiniProject2D
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Turquoise);
+            GraphicsDevice.Clear(Color.GhostWhite);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            viewManager.Draw(spriteBatch);
-            spriteBatch.Draw(ResManager.Instance.Cursor, cursorRect, Color.White);
-            spriteBatch.End();
+            viewManager.Render();
+
             base.Draw(gameTime);
         }
     }

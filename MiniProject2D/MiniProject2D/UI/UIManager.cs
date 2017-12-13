@@ -7,53 +7,61 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniProject2D.Config;
 using MiniProject2D.EventHandler;
-using MiniProject2D.GameComponent;
 using MiniProject2D.Model;
 using MiniProject2D.Sound;
+using MiniProject2D.UI;
 
-namespace MiniProject2D.View
+namespace MiniProject2D.UI
 {
-    class ViewManager
+    class UIManager
     {
-        private GameView invisibleView;
-        private GameView current;
+        private GameUI invisibleUI;
+        private GameUI current;
+        private GameUI dialog;
         private Rectangle container;
 
-        public ViewManager()
+        public UIManager()
         {
-            var graphicsDevice = Setting.Instance.Graphics;
+            var graphicsDevice = Global.Instance.Graphics;
             container = new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
-            current = new MenuView();
-            current.Init(container);
+            current = new MenuUI();
+
         }
 
         public void Update(GameTime gameTime)
         {
             HandledEvent();
-            current.Update(gameTime);
+            if (dialog != null)
+                dialog.Update(gameTime);
+            else
+                current.Update(gameTime);
         }
 
         private void HandledEvent()
         {
             var ev = EventBoard.Instance.GetEvent();
             var eventHandled = true;
-            var isInit = true;
 
             switch (ev)
             {
                 case EventBoard.Event.StartGame:
-                    current = new MainView();
+                    current = new MainUI();
                     break;
-                case EventBoard.Event.OpenSettings:
-                    invisibleView = current;
-                    current = new SettingView();
+                case EventBoard.Event.OpenSetting:
+                    invisibleUI = current;
+                    current = new SettingUI();
                     break;
-                case EventBoard.Event.CloseSettings:
-                    current = invisibleView;
-                    isInit = false;
+                case EventBoard.Event.CloseSetting:
+                    current = invisibleUI;
                     break;
                 case EventBoard.Event.ReturnToMenu:
-                    current = new MenuView();
+                    current = new MenuUI();
+                    break;
+                case EventBoard.Event.ShowNotification:
+                    dialog = new NotificationUI(EventBoard.Instance.NotifyText);
+                    break;
+                case EventBoard.Event.DismissDialog:
+                    dialog = null;
                     break;
                 default:
                     eventHandled = false;
@@ -62,16 +70,16 @@ namespace MiniProject2D.View
 
             if (eventHandled)
             {
-                if (isInit)
-                    current.Init(container);
                 EventBoard.Instance.Finish();
             }
 
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Render()
         {
-            current.Draw(spriteBatch);
+            current.Render();
+            if (dialog != null)
+                dialog.Render();
         }
 
     }

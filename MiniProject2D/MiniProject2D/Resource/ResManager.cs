@@ -11,6 +11,7 @@ namespace MiniProject2D.Resource
         public Texture2D Cursor { get; private set; }
         public Texture2D Control { get; private set; }
         public Texture2D Wall { get; private set; }
+        public Texture2D Rip { get; private set; }
         public Texture2D Ground { get; private set; }
         public Texture2D Dialog { get; private set; }
         public Texture2D Light { get; private set; }
@@ -26,6 +27,7 @@ namespace MiniProject2D.Resource
         public Texture2D Scorpion { get; private set; }
         public Texture2D Collision { get; private set; }
         public Texture2D Flaming { get; private set; }
+        public Texture2D DiscoveryEffect { get; private set; }
 
         public SpriteFont NotifyFont { get; private set; }
         public SpriteFont SmallNotifyFont { get; private set; }
@@ -50,6 +52,7 @@ namespace MiniProject2D.Resource
             Cursor = game.Content.Load<Texture2D>("Others/cursor");
             Control = game.Content.Load<Texture2D>("Others/control");
             Wall = game.Content.Load<Texture2D>("Map/wall");
+            Rip = game.Content.Load<Texture2D>("Others/rip");
             Ground = game.Content.Load<Texture2D>("Map/ground");
             Dialog = game.Content.Load<Texture2D>("Others/dialog");
             Light = game.Content.Load<Texture2D>("Effect/light");
@@ -65,6 +68,7 @@ namespace MiniProject2D.Resource
             Scorpion = game.Content.Load<Texture2D>("Character/scorpion");
             Collision = game.Content.Load<Texture2D>("Effect/collision");
             Flaming = game.Content.Load<Texture2D>("Effect/flaming");
+            DiscoveryEffect = game.Content.Load<Texture2D>("Effect/discover");
             NotifyFont = game.Content.Load<SpriteFont>("Font/GameFont");
             SmallNotifyFont = game.Content.Load<SpriteFont>("Font/Small-GameFont");
             Vision = game.Content.Load<Texture2D>("Others/vision");

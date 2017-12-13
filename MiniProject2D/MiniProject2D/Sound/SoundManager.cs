@@ -25,13 +25,29 @@ namespace MiniProject2D.Sound
         public float SoundVolumn
         {
             get { return soundVolumn; }
-            set { soundVolumn = value; }
+            set
+            {
+                if (value < 0)
+                    soundVolumn = 0;
+                else if (value > 1)
+                    soundVolumn = 1;
+                else
+                    soundVolumn = value;
+            }
         }
 
         public float MusicVolumn
         {
             get { return currentMusicInstance.Volume; }
-            set { currentMusicInstance.Volume = value; }
+            set
+            {
+                if (value < 0)
+                    currentMusicInstance.Volume = 0;
+                else if (value > 1)
+                    currentMusicInstance.Volume = 1;
+                else
+                    currentMusicInstance.Volume = value;
+            }
         }
 
 
@@ -73,7 +89,6 @@ namespace MiniProject2D.Sound
             StopMusic();
             currentMusic = music;
             currentMusicInstance = music.CreateInstance();
-            currentMusicInstance.Volume = 0.5f;
             currentMusicInstance.IsLooped = true;
             currentMusicInstance.Play();
         }
